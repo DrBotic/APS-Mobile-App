@@ -6,6 +6,8 @@ import Profile from './src/screens/Profile';
 import Setting from './src/screens/Setting';
 import TabNavigator from './src/navigators/TabNavigator';
 import Login from './src/screens/Login';
+import SignUp from './src/screens/SignUp'
+import ForgotPassword from './src/screens/ForgotPassword'
 import { NavigationContainer } from '@react-navigation/native';
 import CustomIcon from './src/components/CustomIcon';
 
@@ -13,6 +15,7 @@ const Stack = createNativeStackNavigator();
 
 const App = () => {
   return (
+    /*
     <NavigationContainer>
       <Stack.Navigator screenOptions = {{headerShown: false}}>
         <Stack.Screen
@@ -29,6 +32,31 @@ const App = () => {
           options={{animation: 'slide_from_bottom'}}></Stack.Screen>
       </Stack.Navigator>
     </NavigationContainer>
+    */
+    <NavigationContainer>
+    <Stack.Navigator initialRouteName="Login">
+      <Stack.Screen
+        name="Login"
+        component={Login}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="HomeScreen"
+        component={TabNavigator} //will be changed later
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="ForgotPasswordScreen"
+        component={ForgotPassword}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="SignUpScreen"
+        component={SignUp}
+        options={{ headerShown: false }}
+      />
+    </Stack.Navigator>
+  </NavigationContainer>
   );
 };
 
