@@ -3,13 +3,10 @@ import { StyleSheet, Text, View } from 'react-native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
 import CustomIcon from './src/components/CustomIcon';
-import Login from './src/screens/Login';
-import SignUp from './src/screens/SignUp'
-import ForgotPassword from './src/screens/ForgotPassword'
 import Dashboard from './src/screens/Dashboard';
 import Profile from './src/screens/Profile';
 import Setting from './src/screens/Setting';
-import TabNavigator from './src/navigators/TabNavigator';
+import { SafeAreaView } from 'react-native';
 
 const Stack = createNativeStackNavigator();
 
@@ -35,25 +32,10 @@ const App = () => {
     */
 
     <NavigationContainer>
-    <Stack.Navigator initialRouteName="Login">
-      <Stack.Screen
-        name="Login"
-        component={Login}
-        options={{ headerShown: false }}
-      />
+    <Stack.Navigator initialRouteName="Dashboard">
       <Stack.Screen
         name="HomeScreen"
-        component={TabNavigator} //will be changed later
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="ForgotPasswordScreen"
-        component={ForgotPassword}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="SignUpScreen"
-        component={SignUp}
+        component={Dashboard} //will be changed later
         options={{ headerShown: false }}
       />
     </Stack.Navigator>
