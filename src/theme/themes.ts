@@ -7,6 +7,9 @@ Use this format: "import { Spacing } from './themes/themes.ts';"
 // Anderson's theme data directly from website
 
 interface Spacing {
+    space_5: any;
+    space_10: any;
+    space_15: any;
     space_20: number;
     space_30: number;
     space_40: number;

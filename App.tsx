@@ -6,8 +6,9 @@ import Profile from './src/screens/Profile';
 import Setting from './src/screens/Setting';
 import TabNavigator from './src/navigators/TabNavigator';
 import Login from './src/screens/Login';
-import SignUp from './src/screens/SignUp'
-import ForgotPassword from './src/screens/ForgotPassword'
+import SignUp from './src/screens/SignUp';
+import ForgotPassword from './src/screens/ForgotPassword';
+import Home from './src/screens/Home';
 import { NavigationContainer } from '@react-navigation/native';
 import CustomIcon from './src/components/CustomIcon';
 
@@ -42,7 +43,7 @@ const App = () => {
       />
       <Stack.Screen
         name="HomeScreen"
-        component={TabNavigator} //will be changed later
+        component={Home} //will be changed later
         options={{ headerShown: false }}
       />
       <Stack.Screen
