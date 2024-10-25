@@ -91,13 +91,13 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   logoContainer: {
-    backgroundColor: Color.white, // White background for the top logo section
+    backgroundColor: Color.white,
     paddingTop: 20,
     alignItems: 'center',
     paddingBottom: 10,
   },
   logo: {
-    width: 180, // Adjust size as needed
+    width: 180,
     height: 60,
   },
   scrollContainer: {

@@ -58,7 +58,6 @@ const Login = () => {
               placeholder="Last name"
               secureTextEntry
               value={password}
-              onChangeText={setPassword}
               placeholderTextColor={Color.gray}
             />
 
