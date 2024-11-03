@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, FunctionComponent, useRef } from 'react';
 import {
   StyleSheet,
   Text,
@@ -12,12 +12,50 @@ import {
   Animated,
   TouchableWithoutFeedback,
   SafeAreaView,
+  Dimensions,
+  FlatList,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Color, Spacing, BorderRadius, FontSize, FontFamily } from '../theme/themes.ts';
 import { ResidentialGeneratorData } from '../data/ResidentialGeneratorData.ts';
 import type { ResidentialGenerator } from '../data/ResidentialGeneratorData.ts';
+import MarqueeText from './MarqueeText.tsx';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
+const {width} = Dimensions.get('screen');
+
+const AnimatedProgress: FunctionComponent = () => {
+  return (
+    <FlatList
+      contentContainerStyle={styles.barContainer}
+      data={[1, 2, 3, 4, 5]}
+      keyExtractor={(_, index) => index.toString()}
+      renderItem={({item}) => <ProgressBar widthPct={item} />}
+    />
+  );
+};
+
+const ProgressBar: FunctionComponent<{widthPct: number}> = ({widthPct}) => {
+  const barWidth = useRef(new Animated.Value(0)).current;
+
+  const finalWidth = (width * widthPct) / 10; // This assumes widthPct is between 1 and 10
+
+  useEffect(() => {
+    Animated.spring(barWidth, {
+      toValue: finalWidth,
+      bounciness: 10,
+      speed: 2,
+      useNativeDriver: false, // Use native driver should be false for width animations
+      delay: widthPct * 100,
+    }).start();
+  }, [finalWidth]);
+
+  return (
+    <View style={styles.barContainer}>
+      <Animated.View style={[styles.progressBar, { width: barWidth, height: 10 }]} />
+    </View>
+  );
+};
 
 const GeneratorsScreen = () => {
   const navigation = useNavigation();
@@ -29,6 +67,26 @@ const GeneratorsScreen = () => {
   const [showInstallation, setShowInstallation] = useState(false);
   const [generatorInfo, setGeneratorInfo] = useState<ResidentialGenerator | null>(null);
   const generatorId = 'A1';
+  const [menuVisible, setMenuVisible] = useState(false);
+  const slideAnim = useRef(new Animated.Value(-250)).current;
+
+  const toggleMenu = () => {
+    if (menuVisible) {
+      Animated.timing(slideAnim, {
+        toValue: -250,
+        duration: 300,
+        useNativeDriver: true,
+      }).start(() => setMenuVisible(false));
+    } else {
+      setMenuVisible(true);
+      Animated.timing(slideAnim, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: true,
+      }).start();
+    }
+  };
+
 
   // Mock data for stages and current stage
   const installationStages = [
@@ -99,6 +157,8 @@ const GeneratorsScreen = () => {
     ],
   };
 
+  const barWidth = React.useRef(new Animated.Value(0)).current;
+
   return (
     <ImageBackground
       source={require('../assets/images/map.png')}
@@ -107,6 +167,14 @@ const GeneratorsScreen = () => {
       style={styles.background}
     >
       <View style={styles.logoContainer}>
+      <TouchableOpacity onPress={toggleMenu} style={styles.menuIcon}>
+        <Image 
+          source={require('../assets/images/menu.png')}
+          style={styles.menuIcon}
+          resizeMode="contain"
+        />
+      </TouchableOpacity>
+
         <Image
           source={require('../assets/images/anderson-power-logo.png')}
           style={styles.logo}
@@ -126,25 +194,15 @@ const GeneratorsScreen = () => {
         >
             <View style={styles.container}>
                 <View style={styles.headerContainer}>
-                    <Text style={styles.jobTitle}>Milestone One</Text>
-                    <TouchableOpacity 
-                        onPress={handleInfoClick}
-                        style={styles.helpContainer}
-                        >
-                    <Image 
-                        source={require('../assets/images/info.png')}
-                        style={styles.infoIcon}
-                        resizeMode="contain"
-                    />
-                    </TouchableOpacity>
+                    <Text style={styles.jobTitle}>Permits Received</Text>
                 </View>
             </View>
             <Image
               source={require('../assets/images/gen.png')}
               style={styles.jobImage}
             />
-            <View style={styles.jobTextContainer}>
-              <Text style={styles.jobGeneratorInfo}>Progress Bar Comming soon!</Text>
+            <View style={styles.barContainer}>
+              <Animated.View style={[styles.barContainer, {width: barWidth}]} />
             </View>
             <View style={styles.jobTextContainer}>  
               <Text style={styles.jobGeneratorInfo}>Generator: {job.generatorInfo}</Text>
@@ -212,6 +270,17 @@ const GeneratorsScreen = () => {
                         </View>
                     ))}
                     </ScrollView>
+                    <TouchableOpacity 
+                        onPress={handleInfoClick}
+                        style={[styles.helpContainer, { flexDirection: 'row', alignItems: 'center' }]}
+                    >
+                        <Image 
+                            source={require('../assets/images/info.png')}
+                            style={styles.infoIcon}
+                            resizeMode="contain"
+                        />
+                        <Text style={styles.modalTitle}> Generator info</Text>
+                    </TouchableOpacity>
                 </View>
                 </TouchableWithoutFeedback>
             </View>
@@ -255,6 +324,35 @@ const GeneratorsScreen = () => {
             </View>
           </View>
         </Modal>
+
+        {/* Animated Side Menu */}
+        <Animated.View style={[styles.menuContainer, { transform: [{ translateX: slideAnim }] }]}>
+          {/* Logo Icon */}
+          <View style={styles.logoContainer}>
+            <Ionicons name="sync-circle-outline" size={50} color="green" />
+          </View>
+
+          {/* Menu Items */}
+          <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('HomeScreen')}>
+            <Ionicons name="home-outline" size={24} color="black" />
+            <Text style={styles.menuText}>Home</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Profile')}>
+            <Ionicons name="person-outline" size={24} color="black" />
+            <Text style={styles.menuText}>Profile</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Notifications')}>
+            <Ionicons name="notifications-outline" size={24} color="black" />
+            <Text style={styles.menuText}>Notifications</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Login')}>
+            <Ionicons name="log-out-outline" size={24} color="black" />
+            <Text style={styles.menuText}>Logout</Text>
+          </TouchableOpacity>
+        </Animated.View>
 
         {/* Show Generator Information Modal */}
         <Modal
@@ -361,14 +459,8 @@ const GeneratorsScreen = () => {
 
         {/* Ad Section with scrolling text */}
         <View style={styles.adContainer}>
-          <Image
-            source={require('../assets/images/Arrow_logo.png')} // Update with your ad logo
-            style={styles.adLogo}
-          />
           <Animated.View style={[animatedStyle, styles.scrollingTextContainer]}>
-            <Text style={styles.scrollingText}>
-              put your ads here! put your ads here! put your ads here! put your ads here!
-            </Text>
+            <MarqueeText text="This is a scrolling marquee text in React Native!" />
           </Animated.View>
         </View>
       </ScrollView>
@@ -465,6 +557,7 @@ const styles = StyleSheet.create({
     whiteSpace: 'nowrap',
     overflow: 'hidden',
     textOverflow: 'ellipsis',
+    textAlign: 'center',
 },
 
   jobGeneratorInfo: {
@@ -570,6 +663,7 @@ const styles = StyleSheet.create({
   infoIcon: {
     width: 20,
     height: 20,
+    marginRight: 5,
   },
   modalBackground: {
     flex: 1,
@@ -701,5 +795,44 @@ const styles = StyleSheet.create({
   },
   helpContainer: {
     position: 'relative',
+  },
+  barContainer: {
+    height: 10, // Height of the progress bar
+    width: '100%', // Fill the container
+    backgroundColor: '#e0e0e0', // Background of the bar container
+    borderRadius: 5, // Rounded corners for aesthetics
+    overflow: 'hidden', // Ensures the progress bar does not overflow the container
+  },
+  progressBar: {
+    backgroundColor: '#76c7c0', // Color of the progress bar
+    height: '100%', // Fill the height of the container
+  },
+  menuIcon: {
+    padding: 15,
+    position: 'absolute',
+    width: 40,
+    height: 40,
+    top: 16,
+    left: 10,
+    zIndex: 1,
+  },
+  menuContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: 250,
+    height: '100%',
+    backgroundColor: 'rgba(255, 255, 255, 1)',
+    paddingTop: 50,
+    paddingHorizontal: 20,
+  },
+  menuItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 15,
+  },
+  menuText: {
+    fontSize: 18,
+    marginLeft: 10,
   },
 });

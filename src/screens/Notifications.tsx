@@ -22,12 +22,11 @@ import type { ResidentialGenerator } from '../data/ResidentialGeneratorData.ts';
 import MarqueeText from './MarqueeText.tsx';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Switch } from 'react-native';
-import CheckBox from '@react-native-community/checkbox';
 
 
 const {width} = Dimensions.get('screen');
 
-const ProfileScreen = () => {
+const NotificationsScreen = () => {
     const [pushNotifications, setPushNotifications] = useState(false);
     const [textNotifications, setTextNotifications] = useState(false);
     const [emailNotifications, setEmailNotifications] = useState(false);
@@ -43,11 +42,6 @@ const ProfileScreen = () => {
     const generatorId = 'A1';
     const [menuVisible, setMenuVisible] = useState(false);
     const slideAnim = useRef(new Animated.Value(-250)).current;
-    const [apsDefaultMode, setApsDefaultMode] = useState(true);
-    const [mapChecked, setMapChecked] = useState(true);
-    const [darkMode, setDarkMode] = useState(false);
-    const [lightMode, setLightMode] = useState(false);
-    const [showPassword, setShowPassword] = useState(false);
 
   const toggleMenu = () => {
     if (menuVisible) {
@@ -130,76 +124,58 @@ const ProfileScreen = () => {
       </View>
 
       <ScrollView contentContainerStyle={styles.contentContainer}>
-        <Text style={styles.title}>Profile</Text>
+        <Text style={styles.title}>My Notifications</Text>
         <View style={styles.line} />
-        <ScrollView contentContainerStyle={styles.contentContainer}>
 
-      <View style={styles.profileContainer}>
-        <View style={styles.row}>
-          <Text style={styles.label}>Username</Text>
-          <Text style={styles.value}>emily_h23</Text>
-        </View>
-        
-        <View style={styles.row}>
-          <Text style={styles.label}>Name</Text>
-          <Text style={styles.value}>Emily Harrison</Text>
-        </View>
+        <ScrollView contentContainerStyle={styles.notificationcontainer}>
 
-        <View style={styles.row}>
-          <Text style={styles.label}>Email</Text>
-          <Text style={styles.value}>Emily.harrison@example.com</Text>
-        </View>
+      {/* Push Notifications */}
+      <View style={styles.notificationBox}>
+        <Text style={styles.notificationText}>Push Notifications</Text>
+        <Switch
+          value={pushNotifications}
+          onValueChange={setPushNotifications}
+          thumbColor={pushNotifications ? Color.primary : Color.gray}
+          trackColor={{ false: Color.lightGray, true: Color.primary }}
+        />
+      </View>
 
-        <View style={styles.row}>
-          <Text style={styles.label}>Password</Text>
-          <Text style={styles.value}>{showPassword ? "your_password" : "**********"}</Text>
-          <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-            <Text style={styles.togglePassword}>{showPassword ? "Hide" : "Show"}</Text>
-          </TouchableOpacity>
-        </View>
+      {/* Text Notifications */}
+      <View style={styles.notificationBox}>
+        <Text style={styles.notificationText}>Text Notifications</Text>
+        <Switch
+          value={textNotifications}
+          onValueChange={setTextNotifications}
+          thumbColor={textNotifications ? Color.primary : Color.gray}
+          trackColor={{ false: Color.lightGray, true: Color.primary }}
+        />
+      </View>
 
-        <View style={styles.row}>
-          <Text style={styles.label}>APS Default Mode</Text>
-          <Switch
-            value={apsDefaultMode}
-            onValueChange={setApsDefaultMode}
-            trackColor={{ false: Color.gray, true: Color.grayDark }}
-          />
-        </View>
+      {/* Email Notifications */}
+      <View style={styles.notificationBox}>
+        <Text style={styles.notificationText}>Email Notifications</Text>
+        <Switch
+          value={emailNotifications}
+          onValueChange={setEmailNotifications}
+          thumbColor={emailNotifications ? Color.primary : Color.gray}
+          trackColor={{ false: Color.lightGray, true: Color.primary }}
+        />
+      </View>
 
-        <View style={styles.row}>
-          <Text style={styles.label}>Map?</Text>
-          <CheckBox
-            value={mapChecked}
-            onValueChange={setMapChecked}
-            tintColors={{ true: Color.grayDark, false: Color.gray }}
-          />
+      {/* Pause All Notifications */}
+      <View style={styles.notificationBox}>
+        <View>
+          <Text style={styles.notificationText}>Pause all Notifications</Text>
+          <Text style={styles.subText}>For one day</Text>
         </View>
-
-        <View style={styles.row}>
-          <Text style={styles.label}>Dark Mode</Text>
-          <Switch
-            value={darkMode}
-            onValueChange={setDarkMode}
-            trackColor={{ false: Color.gray, true: Color.grayDark }}
-          />
-        </View>
-
-        <View style={styles.row}>
-          <Text style={styles.label}>Light Mode</Text>
-          <Switch
-            value={lightMode}
-            onValueChange={setLightMode}
-            trackColor={{ false: Color.gray, true: Color.grayDark }}
-          />
-        </View>
-
-        <TouchableOpacity style={styles.editButton}>
-          <Text style={styles.editButtonText}>Edit</Text>
-        </TouchableOpacity>
+        <Switch
+          value={pauseNotifications}
+          onValueChange={setPauseNotifications}
+          thumbColor={pauseNotifications ? Color.primary : Color.gray}
+          trackColor={{ false: Color.lightGray, true: Color.primary }}
+        />
       </View>
     </ScrollView>
-      </ScrollView>
 
         {/* Animated Side Menu */}
         <Animated.View style={[styles.menuContainer, { transform: [{ translateX: slideAnim }] }]}>
@@ -214,7 +190,7 @@ const ProfileScreen = () => {
             <Text style={styles.menuText}>Home</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('HomeScreen')}>
+          <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Profile')}>
             <Ionicons name="person-outline" size={24} color="black" />
             <Text style={styles.menuText}>Profile</Text>
           </TouchableOpacity>
@@ -236,11 +212,12 @@ const ProfileScreen = () => {
             <MarqueeText text="This is a scrolling marquee text in React Native!" />
           </Animated.View>
         </View>
+      </ScrollView>
     </ImageBackground>
   );
 };
 
-export default ProfileScreen;
+export default NotificationsScreen;
 
 const styles = StyleSheet.create({
   background: {
@@ -346,46 +323,38 @@ const styles = StyleSheet.create({
     fontSize: 18,
     marginLeft: 10,
   },
-  profileContainer: {
-    backgroundColor: Color.white,
+  notificationcontainer: {
+    flexGrow: 1,
     padding: Spacing.space_20,
-    borderRadius: BorderRadius.radius_10,
-    width: '90%',
-    height: '85%',
+    backgroundColor: Color.black,
     alignItems: 'center',
   },
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    width: '100%',
-    marginTop: Spacing.space_40,
-    padding: Spacing.space_20,
-  },
-  label: {
-    fontSize: FontSize.size_medium,
-    fontFamily: FontFamily.montserrat_regular,
-    color: 'rgba(1, 1, 1, 1)',
-  },
-  value: {
-    fontSize: FontSize.size_medium,
-    fontFamily: FontFamily.montserrat_regular,
-    color: Color.grayDark,
-  },
-  togglePassword: {
-    color: Color.primary,
-    fontSize: FontSize.size_small,
-  },
-  editButton: {
-    backgroundColor: Color.red,
-    paddingVertical: Spacing.space_10,
-    paddingHorizontal: Spacing.space_40,
-    borderRadius: BorderRadius.radius_5,
-    marginTop: Spacing.space_60,
-  },
-  editButtonText: {
-    color: Color.white,
-    fontSize: FontSize.size_medium,
+  notificationtitle: {
+    fontSize: FontSize.size_large,
     fontFamily: FontFamily.montserrat_bold,
+    color: Color.white,
+    marginVertical: Spacing.space_30,
+  },
+  notificationBox: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: 'rgba(1, 1, 1, 1)',
+    borderWidth: 2,
+    borderColor: Color.white,
+    padding: Spacing.space_40,
+    width: '90%',
+    borderRadius: BorderRadius.radius_10,
+    marginBottom: Spacing.space_50,
+  },
+  notificationText: {
+    fontSize: FontSize.size_medium,
+    color: Color.white,
+    fontFamily: FontFamily.montserrat_regular,
+  },
+  subText: {
+    fontSize: FontSize.size_small,
+    color: Color.white,
+    fontFamily: FontFamily.montserrat_regular,
   },
 });

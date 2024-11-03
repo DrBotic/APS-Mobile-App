@@ -6,11 +6,15 @@ import Profile from './src/screens/Profile';
 import Setting from './src/screens/Setting';
 import TabNavigator from './src/navigators/TabNavigator';
 import Login from './src/screens/Login';
+import Login_Darkmode from './src/screens/Login_dm.tsx';
 import SignUp from './src/screens/SignUp';
+import SignUp_Darkmode from './src/screens/SignUp_dm';
 import ForgotPassword from './src/screens/ForgotPassword';
+import ForgotPassword_Darkmode from './src/screens/ForgotPassword_dm';
 import Home from './src/screens/Home';
 import { NavigationContainer } from '@react-navigation/native';
 import CustomIcon from './src/components/CustomIcon';
+import Notifications from './src/screens/Notifications.tsx';
 
 const Stack = createNativeStackNavigator();
 
@@ -35,7 +39,12 @@ const App = () => {
     </NavigationContainer>
     */
     <NavigationContainer>
-    <Stack.Navigator initialRouteName="Login">
+    <Stack.Navigator initialRouteName="Login_Darkmode">
+      <Stack.Screen
+        name="Login_Darkmode"
+        component={Login_Darkmode}
+        options={{ headerShown: false }}
+      />
       <Stack.Screen
         name="Login"
         component={Login}
@@ -52,8 +61,28 @@ const App = () => {
         options={{ headerShown: false }}
       />
       <Stack.Screen
+        name="ForgotPassword_Darkmode"
+        component={ForgotPassword_Darkmode}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
         name="SignUpScreen"
         component={SignUp}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="SignUp_Darkmode"
+        component={SignUp_Darkmode}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Notifications"
+        component={Notifications}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Profile"
+        component={Profile}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>
