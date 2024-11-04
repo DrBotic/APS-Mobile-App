@@ -124,10 +124,57 @@ const NotificationsScreen = () => {
       </View>
 
       <ScrollView contentContainerStyle={styles.contentContainer}>
-        <Text style={styles.title}>Profile</Text>
+        <Text style={styles.title}>My Notifications</Text>
         <View style={styles.line} />
 
         <ScrollView contentContainerStyle={styles.notificationcontainer}>
+
+      {/* Push Notifications */}
+      <View style={styles.notificationBox}>
+        <Text style={styles.notificationText}>Push Notifications</Text>
+        <Switch
+          value={pushNotifications}
+          onValueChange={setPushNotifications}
+          thumbColor={pushNotifications ? Color.primary : Color.gray}
+          trackColor={{ false: Color.lightGray, true: Color.primary }}
+        />
+      </View>
+
+      {/* Text Notifications */}
+      <View style={styles.notificationBox}>
+        <Text style={styles.notificationText}>Text Notifications</Text>
+        <Switch
+          value={textNotifications}
+          onValueChange={setTextNotifications}
+          thumbColor={textNotifications ? Color.primary : Color.gray}
+          trackColor={{ false: Color.lightGray, true: Color.primary }}
+        />
+      </View>
+
+      {/* Email Notifications */}
+      <View style={styles.notificationBox}>
+        <Text style={styles.notificationText}>Email Notifications</Text>
+        <Switch
+          value={emailNotifications}
+          onValueChange={setEmailNotifications}
+          thumbColor={emailNotifications ? Color.primary : Color.gray}
+          trackColor={{ false: Color.lightGray, true: Color.primary }}
+        />
+      </View>
+
+      {/* Pause All Notifications */}
+      <View style={styles.notificationBox}>
+        <View>
+          <Text style={styles.notificationText}>Pause all Notifications</Text>
+          <Text style={styles.subText}>For one day</Text>
+        </View>
+        <Switch
+          value={pauseNotifications}
+          onValueChange={setPauseNotifications}
+          thumbColor={pauseNotifications ? Color.primary : Color.gray}
+          trackColor={{ false: Color.lightGray, true: Color.primary }}
+        />
+      </View>
     </ScrollView>
 
         {/* Animated Side Menu */}
@@ -143,7 +190,7 @@ const NotificationsScreen = () => {
             <Text style={styles.menuText}>Home</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('HomeScreen')}>
+          <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Profile')}>
             <Ionicons name="person-outline" size={24} color="black" />
             <Text style={styles.menuText}>Profile</Text>
           </TouchableOpacity>
@@ -275,5 +322,39 @@ const styles = StyleSheet.create({
   menuText: {
     fontSize: 18,
     marginLeft: 10,
+  },
+  notificationcontainer: {
+    flexGrow: 1,
+    padding: Spacing.space_20,
+    backgroundColor: Color.black,
+    alignItems: 'center',
+  },
+  notificationtitle: {
+    fontSize: FontSize.size_large,
+    fontFamily: FontFamily.montserrat_bold,
+    color: Color.white,
+    marginVertical: Spacing.space_30,
+  },
+  notificationBox: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: 'rgba(1, 1, 1, 1)',
+    borderWidth: 2,
+    borderColor: Color.white,
+    padding: Spacing.space_40,
+    width: '90%',
+    borderRadius: BorderRadius.radius_10,
+    marginBottom: Spacing.space_50,
+  },
+  notificationText: {
+    fontSize: FontSize.size_medium,
+    color: Color.white,
+    fontFamily: FontFamily.montserrat_regular,
+  },
+  subText: {
+    fontSize: FontSize.size_small,
+    color: Color.white,
+    fontFamily: FontFamily.montserrat_regular,
   },
 });
