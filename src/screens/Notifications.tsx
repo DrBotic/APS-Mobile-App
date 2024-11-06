@@ -22,6 +22,7 @@ import type { ResidentialGenerator } from '../data/ResidentialGeneratorData.ts';
 import MarqueeText from './MarqueeText.tsx';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Switch } from 'react-native';
+import { useDarkMode } from '../components/DarkModeContext.tsx';
 
 
 const {width} = Dimensions.get('screen');
@@ -35,6 +36,8 @@ const NotificationsScreen = () => {
     const [modalVisible, setModalVisible] = useState(false);
     const [jobKey, setJobKey] = useState('');
     const [installationJobs, setInstallationJobs] = useState([]);
+    const { isDarkMode, toggleDarkMode } = useDarkMode();
+    const styles = isDarkMode ? darkStyles : lightStyles;
 
     const [showInfo, setShowInfo] = useState(false);
     const [showInstallation, setShowInstallation] = useState(false);
@@ -219,7 +222,7 @@ const NotificationsScreen = () => {
 
 export default NotificationsScreen;
 
-const styles = StyleSheet.create({
+const lightStyles = StyleSheet.create({
   background: {
     flex: 1,
   },
@@ -327,6 +330,147 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     padding: Spacing.space_20,
     backgroundColor: Color.black,
+    alignItems: 'center',
+  },
+  notificationtitle: {
+    fontSize: FontSize.size_large,
+    fontFamily: FontFamily.montserrat_bold,
+    color: Color.white,
+    marginVertical: Spacing.space_30,
+  },
+  notificationBox: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: 'rgba(1, 1, 1, 1)',
+    borderWidth: 2,
+    borderColor: Color.white,
+    padding: Spacing.space_40,
+    width: '90%',
+    borderRadius: BorderRadius.radius_10,
+    marginBottom: Spacing.space_50,
+  },
+  notificationText: {
+    fontSize: FontSize.size_medium,
+    color: Color.white,
+    fontFamily: FontFamily.montserrat_regular,
+  },
+  subText: {
+    fontSize: FontSize.size_small,
+    color: Color.white,
+    fontFamily: FontFamily.montserrat_regular,
+  },
+});
+
+const darkStyles = StyleSheet.create({
+  background: {
+    flex: 1,
+    backgroundColor: '#3A3A3A',
+  },
+  logoContainer: {
+    backgroundColor: '#393939',
+    paddingTop: 20,
+    alignItems: 'center',
+    paddingBottom: 10,
+  },
+  logo: {
+    width: 180,
+    height: 60,
+  },
+  contentContainer: {
+    flexGrow: 1,
+    alignItems: 'center',
+    paddingTop: Spacing.space_50,
+  },
+  title: {
+    fontSize: FontSize.size_large,
+    fontFamily: FontFamily.montserrat_bold,
+    marginBottom: Spacing.space_20,
+    color: Color.white,
+    textShadowColor: 'rgba(0, 0, 0, 0.5)',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 4,
+  },
+  line: {
+    width: '80%',
+    height: 2,
+    backgroundColor: Color.white,
+    marginBottom: Spacing.space_30,
+  },
+  adContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: '#5A5A5A',
+    padding: Spacing.space_10,
+    borderTopLeftRadius: BorderRadius.radius_20,
+    borderTopRightRadius: BorderRadius.radius_20,
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: 60,
+  },
+  adLogo: {
+    width: 40,
+    height: 40,
+    marginRight: Spacing.space_10,
+  },
+  scrollingText: {
+    fontSize: FontSize.size_medium,
+    fontFamily: FontFamily.montserrat_regular,
+  },
+  container: {
+    backgroundColor: '#5A5A5A',
+    padding: Spacing.space_50,
+    borderRadius: BorderRadius.radius_20,
+    width: '80%',
+    alignItems: 'center',
+    shadowColor: Color.grayDark,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    paddingTop: Spacing.space_50,
+  },
+  headerContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    width: '100%',
+    marginBottom: Spacing.space_20,
+  },
+  menuIcon: {
+    padding: 15,
+    position: 'absolute',
+    width: 40,
+    height: 40,
+    top: 16,
+    left: 10,
+    zIndex: 1,
+  },
+  menuContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: 250,
+    height: '100%',
+    backgroundColor: 'rgba(255, 255, 255, 1)',
+    paddingTop: 50,
+    paddingHorizontal: 20,
+  },
+  menuItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 15,
+  },
+  menuText: {
+    fontSize: 18,
+    marginLeft: 10,
+  },
+  notificationcontainer: {
+    flexGrow: 1,
+    padding: Spacing.space_20,
+    backgroundColor: '#000',
     alignItems: 'center',
   },
   notificationtitle: {

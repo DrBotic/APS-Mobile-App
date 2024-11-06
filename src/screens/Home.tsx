@@ -100,6 +100,7 @@ const GeneratorsScreen = () => {
 
   const currentStage = 3; // Example of current stage
   
+  
   const handleOpenInstallationModal = () => {
     setShowInstallation(true);
   };
