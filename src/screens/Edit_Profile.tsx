@@ -26,7 +26,7 @@ import { Switch } from 'react-native';
 
 const {width} = Dimensions.get('screen');
 
-const NotificationsScreen = () => {
+const EditProfileScreen = () => {
     const [pushNotifications, setPushNotifications] = useState(false);
     const [textNotifications, setTextNotifications] = useState(false);
     const [emailNotifications, setEmailNotifications] = useState(false);
@@ -42,6 +42,49 @@ const NotificationsScreen = () => {
     const generatorId = 'A1';
     const [menuVisible, setMenuVisible] = useState(false);
     const slideAnim = useRef(new Animated.Value(-250)).current;
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
+    const [email, setEmail] = useState('');
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+
+    const handleSubmit = () => {
+        console.log("Form submitted with:", { firstName, lastName, email, username, password, confirmPassword });
+      };
+
+      useEffect(() => {
+        // Fetch user data from the database when the component mounts
+        const fetchUserData = async () => {
+          try {
+            // Uncomment the following lines when you are able to use the actual API
+            // const response = await fetch('YOUR_API_ENDPOINT'); // Replace with actual API endpoint
+            // const userData = await response.json();
+      
+            // sample data
+            const sampleData = {
+              firstName: 'Emily',
+              lastName: 'Harrison',
+              email: 'Emily.harrison@example.com',
+              username: 'idk',
+              password: 'Testing_password',
+            };
+      
+            // Set the sample data as the initial values
+            setFirstName(sampleData.firstName);
+            setLastName(sampleData.lastName);
+            setEmail(sampleData.email);
+            setUsername(sampleData.username);
+            setPassword(sampleData.password);
+            setConfirmPassword(sampleData.password);
+          } catch (error) {
+            console.error("Error fetching user data:", error);
+          }
+        };
+      
+        fetchUserData();
+      }, []);
+      
 
   const toggleMenu = () => {
     if (menuVisible) {
@@ -123,59 +166,57 @@ const NotificationsScreen = () => {
         />
       </View>
 
-      <ScrollView contentContainerStyle={styles.contentContainer}>
-        <Text style={styles.title}>My Notifications</Text>
-        <View style={styles.line} />
-
-        <ScrollView contentContainerStyle={styles.notificationcontainer}>
-
-      {/* Push Notifications */}
-      <View style={styles.notificationBox}>
-        <Text style={styles.notificationText}>Push Notifications</Text>
-        <Switch
-          value={pushNotifications}
-          onValueChange={setPushNotifications}
-          thumbColor={pushNotifications ? Color.primary : Color.gray}
-          trackColor={{ false: Color.lightGray, true: Color.primary }}
-        />
-      </View>
-
-      {/* Text Notifications */}
-      <View style={styles.notificationBox}>
-        <Text style={styles.notificationText}>Text Notifications</Text>
-        <Switch
-          value={textNotifications}
-          onValueChange={setTextNotifications}
-          thumbColor={textNotifications ? Color.primary : Color.gray}
-          trackColor={{ false: Color.lightGray, true: Color.primary }}
-        />
-      </View>
-
-      {/* Email Notifications */}
-      <View style={styles.notificationBox}>
-        <Text style={styles.notificationText}>Email Notifications</Text>
-        <Switch
-          value={emailNotifications}
-          onValueChange={setEmailNotifications}
-          thumbColor={emailNotifications ? Color.primary : Color.gray}
-          trackColor={{ false: Color.lightGray, true: Color.primary }}
-        />
-      </View>
-
-      {/* Pause All Notifications */}
-      <View style={styles.notificationBox}>
-        <View>
-          <Text style={styles.notificationText}>Pause all Notifications</Text>
-          <Text style={styles.subText}>For one day</Text>
-        </View>
-        <Switch
-          value={pauseNotifications}
-          onValueChange={setPauseNotifications}
-          thumbColor={pauseNotifications ? Color.primary : Color.gray}
-          trackColor={{ false: Color.lightGray, true: Color.primary }}
-        />
-      </View>
-    </ScrollView>
+        <ScrollView contentContainerStyle={styles.contentContainer}>
+        <Text style={styles.title}>Edit Profile</Text>
+        <View style={styles.formContainer}>
+            <Text style={styles.label}>Enter your First Name</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="First Name"
+            value={firstName}
+            onChangeText={setFirstName}
+            placeholderTextColor="#BBBBBB"
+          />
+          <Text style={styles.label}>Enter your Last Name</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Last Name"
+            value={lastName}
+            onChangeText={setLastName}
+            placeholderTextColor="#BBBBBB"
+          />
+          <Text style={styles.label}>Enter your Email</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Email"
+            value={email}
+            onChangeText={setEmail}
+            keyboardType="email-address"
+            placeholderTextColor="#BBBBBB"
+          />
+          <Text style={styles.label}>Enter your Password</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Password"
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry
+            placeholderTextColor="#BBBBBB"
+          />
+          <Text style={styles.label}>Confirm your Password</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Confirm Password"
+            value={confirmPassword}
+            onChangeText={setConfirmPassword}
+            secureTextEntry
+            placeholderTextColor="#BBBBBB"
+          />
+          <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}  onPress={() => navigation.navigate('Profile')}>
+            <Text style={styles.submitButtonText}>Submit</Text>
+          </TouchableOpacity>
+            </View>
+        </ScrollView>
 
         {/* Animated Side Menu */}
         <Animated.View style={[styles.menuContainer, { transform: [{ translateX: slideAnim }] }]}>
@@ -225,19 +266,11 @@ const NotificationsScreen = () => {
             <Text style={styles.menuText}>Logout</Text>
           </TouchableOpacity>
         </Animated.View>
-
-        {/* Ad Section with scrolling text */}
-        <View style={styles.adContainer}>
-          <Animated.View style={[animatedStyle, styles.scrollingTextContainer]}>
-            <MarqueeText text="This is a scrolling marquee text in React Native!" />
-          </Animated.View>
-        </View>
-      </ScrollView>
     </ImageBackground>
   );
 };
 
-export default NotificationsScreen;
+export default EditProfileScreen;
 
 const styles = StyleSheet.create({
   background: {
@@ -349,38 +382,45 @@ const styles = StyleSheet.create({
     height: 90,
     marginRight: Spacing.space_10,
   },
-  notificationcontainer: {
-    flexGrow: 1,
-    padding: Spacing.space_20,
-    backgroundColor: Color.black,
-    alignItems: 'center',
-  },
-  notificationtitle: {
-    fontSize: FontSize.size_large,
-    fontFamily: FontFamily.montserrat_bold,
-    color: Color.white,
-    marginVertical: Spacing.space_30,
-  },
-  notificationBox: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    backgroundColor: 'rgba(1, 1, 1, 1)',
-    borderWidth: 2,
-    borderColor: Color.white,
-    padding: Spacing.space_40,
+  formContainer: {
+    backgroundColor: Color.white,
+    borderRadius: BorderRadius.radius_20,
     width: '90%',
+    height: '80%',
+    padding: Spacing.space_20,
+    alignItems: 'center',
+    shadowColor: Color.grayDark,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+  },
+  input: {
+    width: '95%',
+    height: 40,
+    borderColor: Color.gray,
+    borderWidth: 1,
     borderRadius: BorderRadius.radius_10,
-    marginBottom: Spacing.space_50,
+    paddingHorizontal: Spacing.space_10,
+    marginBottom: Spacing.space_40,
+    marginTop: Spacing.space_30,
   },
-  notificationText: {
+  submitButton: {
+    backgroundColor: Color.red,
+    borderRadius: BorderRadius.radius_10,
+    paddingVertical: Spacing.space_10,
+    paddingHorizontal: Spacing.space_20,
+    marginTop: Spacing.space_10,
+  },
+  submitButtonText: {
+    color: Color.white,
     fontSize: FontSize.size_medium,
-    color: Color.white,
+    fontFamily: FontFamily.montserrat_bold,
+  },  
+  label: {
+    fontSize: FontSize.size_normal,
     fontFamily: FontFamily.montserrat_regular,
-  },
-  subText: {
-    fontSize: FontSize.size_small,
-    color: Color.white,
-    fontFamily: FontFamily.montserrat_regular,
+    color: '#111111',
+    marginBottom: Spacing.space_20,
+    paddingTop: Spacing.space_30,
   },
 });

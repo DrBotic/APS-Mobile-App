@@ -98,8 +98,7 @@ const GeneratorsScreen = () => {
     'Installation Completed',
   ];
 
-  const currentStage = 3; // Example of current stage
-  
+  const currentStage = 4; // Example of current stage
   
   const handleOpenInstallationModal = () => {
     setShowInstallation(true);
@@ -330,27 +329,47 @@ const GeneratorsScreen = () => {
         <Animated.View style={[styles.menuContainer, { transform: [{ translateX: slideAnim }] }]}>
           {/* Logo Icon */}
           <View style={styles.logoContainer}>
-            <Ionicons name="sync-circle-outline" size={50} color="green" />
+            <Image
+              source={require('../assets/images/Arrow_logo.png')}
+              style={styles.Menu_Logo}
+              resizeMode="contain"
+              />
           </View>
 
           {/* Menu Items */}
           <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('HomeScreen')}>
-            <Ionicons name="home-outline" size={24} color="black" />
+            <Image
+            source={require('../assets/images/Home.png')}
+            style={styles.adLogo}
+            resizeMode="contain"
+            />
             <Text style={styles.menuText}>Home</Text>
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Profile')}>
-            <Ionicons name="person-outline" size={24} color="black" />
+            <Image
+              source={require('../assets/images/Settings.png')}
+              style={styles.adLogo}
+              resizeMode="contain"
+              />
             <Text style={styles.menuText}>Profile</Text>
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Notifications')}>
-            <Ionicons name="notifications-outline" size={24} color="black" />
+            <Image
+              source={require('../assets/images/bell.png')}
+              style={styles.adLogo}
+              resizeMode="contain"
+              />
             <Text style={styles.menuText}>Notifications</Text>
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Login')}>
-            <Ionicons name="log-out-outline" size={24} color="black" />
+            <Image
+              source={require('../assets/images/Logout.png')}
+              style={styles.adLogo}
+              resizeMode="contain"
+              />
             <Text style={styles.menuText}>Logout</Text>
           </TouchableOpacity>
         </Animated.View>
@@ -835,5 +854,11 @@ const styles = StyleSheet.create({
   menuText: {
     fontSize: 18,
     marginLeft: 10,
+    color: 'black',
+  },
+  Menu_Logo: {
+    width: 90,
+    height: 90,
+    marginRight: Spacing.space_10,
   },
 });

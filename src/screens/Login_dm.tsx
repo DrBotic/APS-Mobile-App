@@ -19,12 +19,6 @@ const Login = () => {
   const [password, setPassword] = useState('');
 
   return (
-    <ImageBackground
-      source={require('../assets/images/map.png')}
-      resizeMode="cover"
-      blurRadius={5}
-      style={styles.background}
-    >
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.logoContainer}>
           <Image
@@ -36,35 +30,47 @@ const Login = () => {
 
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           <View style={styles.container}>
-            <Text style={styles.label}>Enter your Username</Text>
+            <Text style={styles.label}>Enter your username</Text>
             <TextInput
               style={styles.input}
               placeholder="Username"
               value={username}
               onChangeText={setUsername}
-              placeholderTextColor={Color.gray}
+              placeholderTextColor="#CCCCCC" 
             />
 
-            <Text style={styles.label}>Enter your Email</Text>
+            <Text style={styles.label}>Enter your Password</Text>
             <TextInput
               style={styles.input}
-              placeholder="Email"
+              placeholder="Password"
               secureTextEntry
               value={password}
               onChangeText={setPassword}
-              placeholderTextColor={Color.gray}
+              placeholderTextColor="#CCCCCC" 
             />
 
             <TouchableOpacity
               style={styles.button}
-              onPress={() => navigation.navigate('Login')}
+              onPress={() => navigation.navigate('HomeScreen')}
             >
-              <Text style={styles.buttonText}>Send Email</Text>
+              <Text style={styles.buttonText}>Sign In</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={() => navigation.navigate('ForgotPassword_Darkmode')}
+            >
+              <Text style={styles.linkText}>Forgot password?</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => navigation.navigate('SignUp_Darkmode')}
+            >
+              <Text style={styles.buttonText}>Sign up</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>
       </SafeAreaView>
-    </ImageBackground>
   );
 };
 
@@ -72,19 +78,21 @@ export default Login;
 
 const styles = StyleSheet.create({
   background: {
+    backgroundColor: '#3A3A3A',  
     flex: 1,
   },
   safeArea: {
     flex: 1,
+    backgroundColor: '#4A4A4A', 
   },
   logoContainer: {
-    backgroundColor: Color.white, // White background for the top logo section
+    backgroundColor: '#393939',  
     paddingTop: 20,
     alignItems: 'center',
     paddingBottom: 10,
   },
   logo: {
-    width: 180, // Adjust size as needed
+    width: 180,
     height: 60,
   },
   scrollContainer: {
@@ -93,33 +101,35 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   container: {
-    backgroundColor: Color.white,
+    backgroundColor: '#5A5A5A',
     padding: Spacing.space_50,
     borderRadius: BorderRadius.radius_20,
     width: '80%',
     alignItems: 'center',
-    shadowColor: Color.grayDark,
+    shadowColor: '#000', 
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.3,
     shadowRadius: 4,
   },
   label: {
     fontSize: FontSize.size_normal,
     fontFamily: FontFamily.montserrat_regular,
+    color: '#FFFFFF', 
     marginBottom: Spacing.space_20,
   },
   input: {
     width: '100%',
     height: 40,
-    borderColor: Color.gray,
+    borderColor: '#888888',  
     borderWidth: 1,
     borderRadius: BorderRadius.radius_8,
     paddingHorizontal: Spacing.space_20,
     marginBottom: Spacing.space_30,
+    color: '#FFFFFF', 
     fontFamily: FontFamily.sansSerif_regular,
   },
   button: {
-    backgroundColor: Color.red,
+    backgroundColor: '#2C2C2C', 
     width: '100%',
     paddingVertical: Spacing.space_20,
     borderRadius: BorderRadius.radius_30,
@@ -127,12 +137,12 @@ const styles = StyleSheet.create({
     marginVertical: Spacing.space_20,
   },
   buttonText: {
-    color: Color.white,
+    color: '#FFFFFF', 
     fontSize: FontSize.size_medium,
     fontFamily: FontFamily.montserrat_bold,
   },
   linkText: {
-    color: Color.primary,
+    color: '#CCCCCC',
     textDecorationLine: 'underline',
     fontSize: FontSize.size_small,
     marginVertical: Spacing.space_20,

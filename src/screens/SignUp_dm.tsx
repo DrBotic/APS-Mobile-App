@@ -22,7 +22,7 @@ const Login = () => {
   const [isChecked, setChecked] = useState(false);
 
   const openTermsLink = () => {
-    Linking.openURL('https://your-terms-of-service-url.com'); //APS can add a terms of service link here if needed. 
+    Linking.openURL('https://your-terms-of-service-url.com'); // APS can add a terms of service link here if needed.
   };
 
   return (
@@ -49,36 +49,34 @@ const Login = () => {
               placeholder="First name"
               value={username}
               onChangeText={setUsername}
-              placeholderTextColor={Color.gray}
+              placeholderTextColor="#CCCCCC"
             />
 
             <Text style={styles.label}>Enter your Last name</Text>
             <TextInput
               style={styles.input}
               placeholder="Last name"
-              secureTextEntry
               value={password}
-              placeholderTextColor={Color.gray}
+              onChangeText={setPassword}
+              placeholderTextColor="#CCCCCC"
             />
 
             <Text style={styles.label}>Enter your Email</Text>
             <TextInput
               style={styles.input}
               placeholder="Email"
-              secureTextEntry
               value={password}
               onChangeText={setPassword}
-              placeholderTextColor={Color.gray}
+              placeholderTextColor="#CCCCCC"
             />
 
             <Text style={styles.label}>Enter a Username</Text>
             <TextInput
               style={styles.input}
               placeholder="Username"
-              secureTextEntry
               value={password}
               onChangeText={setPassword}
-              placeholderTextColor={Color.gray}
+              placeholderTextColor="#CCCCCC"
             />
 
             <Text style={styles.label}>Enter a Password</Text>
@@ -88,7 +86,7 @@ const Login = () => {
               secureTextEntry
               value={password}
               onChangeText={setPassword}
-              placeholderTextColor={Color.gray}
+              placeholderTextColor="#CCCCCC"
             />
 
             <Text style={styles.label}>Confirm Password</Text>
@@ -98,7 +96,7 @@ const Login = () => {
               secureTextEntry
               value={password}
               onChangeText={setPassword}
-              placeholderTextColor={Color.gray}
+              placeholderTextColor="#CCCCCC"
             />
 
             {/* Checkbox with Terms of Service */}
@@ -106,7 +104,7 @@ const Login = () => {
               <CheckBox
                 value={isChecked}
                 onValueChange={setChecked}
-                tintColors={{ true: Color.primary, false: Color.gray }}
+                tintColors={{ true: '#2C2C2C', false: '#CCCCCC' }}
               />
               <Text style={styles.checkboxText}>
                 I accept the{' '}
@@ -118,7 +116,7 @@ const Login = () => {
 
             <TouchableOpacity
               style={[styles.button, { opacity: isChecked ? 1 : 0.5 }]}
-              onPress={() => isChecked && navigation.navigate('Login')}
+              onPress={() => isChecked && navigation.navigate('Login_Darkmode')}
               disabled={!isChecked}
             >
               <Text style={styles.buttonText}>Sign up</Text>
@@ -135,12 +133,14 @@ export default Login;
 const styles = StyleSheet.create({
   background: {
     flex: 1,
+    backgroundColor: '#3A3A3A',
   },
   safeArea: {
     flex: 1,
+    backgroundColor: '#4A4A4A',
   },
   logoContainer: {
-    backgroundColor: Color.white,
+    backgroundColor: '#393939',
     paddingTop: 20,
     alignItems: 'center',
     paddingBottom: 10,
@@ -155,33 +155,35 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   container: {
-    backgroundColor: Color.white,
+    backgroundColor: '#5A5A5A',
     padding: Spacing.space_50,
     borderRadius: BorderRadius.radius_20,
     width: '80%',
     alignItems: 'center',
-    shadowColor: Color.grayDark,
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.3,
     shadowRadius: 4,
   },
   label: {
     fontSize: FontSize.size_normal,
     fontFamily: FontFamily.montserrat_regular,
+    color: '#FFFFFF',
     marginBottom: Spacing.space_20,
   },
   input: {
     width: '100%',
     height: 40,
-    borderColor: Color.gray,
+    borderColor: '#888888',
     borderWidth: 1,
     borderRadius: BorderRadius.radius_8,
     paddingHorizontal: Spacing.space_20,
     marginBottom: Spacing.space_30,
+    color: '#FFFFFF',
     fontFamily: FontFamily.sansSerif_regular,
   },
   button: {
-    backgroundColor: Color.red,
+    backgroundColor: '#2C2C2C',
     width: '100%',
     paddingVertical: Spacing.space_20,
     borderRadius: BorderRadius.radius_30,
@@ -189,7 +191,7 @@ const styles = StyleSheet.create({
     marginVertical: Spacing.space_20,
   },
   buttonText: {
-    color: Color.white,
+    color: '#FFFFFF',
     fontSize: FontSize.size_medium,
     fontFamily: FontFamily.montserrat_bold,
   },
@@ -202,9 +204,10 @@ const styles = StyleSheet.create({
     marginLeft: 8,
     fontSize: FontSize.size_normal,
     fontFamily: FontFamily.montserrat_regular,
+    color: '#FFFFFF',
   },
   linkText: {
-    color: Color.primary,
+    color: '#CCCCCC',
     textDecorationLine: 'underline',
   },
 });
