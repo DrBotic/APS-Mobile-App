@@ -18,55 +18,26 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import { Color, Spacing, BorderRadius, FontSize, FontFamily } from '../theme/themes.ts';
 import { ResidentialGeneratorData } from '../data/ResidentialGeneratorData.ts';
+import { CommercialGeneratorData } from '../data/ResidentialGeneratorData.ts';
+import { IndustrialGeneratorData } from '../data/ResidentialGeneratorData.ts';
 import type { ResidentialGenerator } from '../data/ResidentialGeneratorData.ts';
+import type { CommercialGenerator } from '../data/CommercialGeneratorData.ts';
+import type { IndustrialGenerator } from '../data/IndustrialGeneratorData.ts';
 import MarqueeText from './MarqueeText.tsx';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const {width} = Dimensions.get('screen');
-
-const AnimatedProgress: FunctionComponent = () => {
-  return (
-    <FlatList
-      contentContainerStyle={styles.barContainer}
-      data={[1, 2, 3, 4, 5]}
-      keyExtractor={(_, index) => index.toString()}
-      renderItem={({item}) => <ProgressBar widthPct={item} />}
-    />
-  );
-};
-
-const ProgressBar: FunctionComponent<{widthPct: number}> = ({widthPct}) => {
-  const barWidth = useRef(new Animated.Value(0)).current;
-
-  const finalWidth = (width * widthPct) / 10; // This assumes widthPct is between 1 and 10
-
-  useEffect(() => {
-    Animated.spring(barWidth, {
-      toValue: finalWidth,
-      bounciness: 10,
-      speed: 2,
-      useNativeDriver: false, // Use native driver should be false for width animations
-      delay: widthPct * 100,
-    }).start();
-  }, [finalWidth]);
-
-  return (
-    <View style={styles.barContainer}>
-      <Animated.View style={[styles.progressBar, { width: barWidth, height: 10 }]} />
-    </View>
-  );
-};
 
 const GeneratorsScreen = () => {
   const navigation = useNavigation();
   const [modalVisible, setModalVisible] = useState(false);
   const [jobKey, setJobKey] = useState('');
   const [installationJobs, setInstallationJobs] = useState([]);
-
   const [showInfo, setShowInfo] = useState(false);
   const [showInstallation, setShowInstallation] = useState(false);
   const [generatorInfo, setGeneratorInfo] = useState<ResidentialGenerator | null>(null);
   const generatorId = 'A1';
+  const [generatorModelId, setGeneratorModelId] = useState('');
   const [menuVisible, setMenuVisible] = useState(false);
   const slideAnim = useRef(new Animated.Value(-250)).current;
 
@@ -88,7 +59,7 @@ const GeneratorsScreen = () => {
   };
 
 
-  // Mock data for stages and current stage
+  // Installation status
   const installationStages = [
     'Deposit Collected',
     'Equipment Order',
@@ -100,6 +71,46 @@ const GeneratorsScreen = () => {
 
   const currentStage = 3; // Example of current stage
   
+  const modelMap: { [key: string]: string } = {
+    '20kW/Model A': 'A1',
+    '25kW/Model B': 'A2',
+    '22kW/Model C': 'A3',
+    '30kW/Model D': 'A4',
+    '35kW/Model E': 'A5',
+    '28kW/Model F': 'A6',
+    '40kW/Model G': 'A7',
+    '45kW/Model H': 'A1',
+    '50kW/Model I': 'A2',
+    '55kW/Model J': 'A3',
+  };
+  
+  function getGeneratorData(modelName: string) {
+    const generatorId = modelMap[modelName];
+    if (!generatorId) {
+      console.log('No generator ID found for this model.');
+      return;
+    }
+  
+    // Consolidate data from all sources
+    const allData = [...ResidentialGeneratorData, ...CommercialGeneratorData, ...IndustrialGeneratorData];
+  
+    // Find generator in the combined data
+    const generatorInfo = allData.find(generator => generator.id === generatorId);
+  
+    if (generatorInfo) {
+      console.log(`Generator Name: ${generatorInfo.name}`);
+      console.log(`Specifications:`, generatorInfo.specifications);
+    } else {
+      console.log('No generator data found for this model.');
+    }
+  }
+  
+  {/* Usage example
+
+  const selectedModel = '25kW/Model B';
+  getGeneratorData(selectedModel);
+
+  */}
   
   const handleOpenInstallationModal = () => {
     setShowInstallation(true);
@@ -110,10 +121,17 @@ const GeneratorsScreen = () => {
   };
 
   const handleInfoClick = () => {
-    const generator = ResidentialGeneratorData.find((item: ResidentialGenerator) => item.id === generatorId);
+    // Consolidate data from all sources
+    const allData = [...ResidentialGeneratorData, ...CommercialGeneratorData, ...IndustrialGeneratorData];
+    
+    // Find generator in the combined data
+    const generator = allData.find((item: { id: string }) => item.id === generatorId);
+    
+    // Set generator info and show the information modal
     setGeneratorInfo(generator || null);
     setShowInfo(true);
   };
+  
 
   const handleCloseInfo = () => {
     setShowInfo(false);
@@ -126,8 +144,8 @@ const GeneratorsScreen = () => {
   const addInstallationJob = () => {
     const newJob = {
       key: jobKey,
-      generatorInfo: '10kW Air-Cooled Standby Generator',
-      orderId: '1000-001',
+      generatorInfo: '',
+      orderId: '',
     };
     setInstallationJobs([...installationJobs, newJob]);
     setJobKey('');
