@@ -58,7 +58,6 @@ const GeneratorsScreen = () => {
     }
   };
 
-
   // Installation status
   const installationStages = [
     'Deposit Collected',
@@ -72,23 +71,33 @@ const GeneratorsScreen = () => {
   const currentStage = 3; // Example of current stage
   
   const modelMap: { [key: string]: string } = {
-    '20kW/Model A': 'A1',
-    '25kW/Model B': 'A2',
-    '22kW/Model C': 'A3',
-    '30kW/Model D': 'A4',
-    '35kW/Model E': 'A5',
-    '28kW/Model F': 'A6',
-    '40kW/Model G': 'A7',
-    '45kW/Model H': 'A1',
-    '50kW/Model I': 'A2',
-    '55kW/Model J': 'A3',
+    // Residential Models
+    '10kW/Model A': 'A1',
+    '14kW/Model B': 'A2',
+    '18kW/Model C': 'A3',
+    '22kW/Model D': 'A4',
+    '7.5kW/Model E': 'A5',
+    '24kW/Model F': 'A6',
+    '30kW/Model G': 'A7',
+  
+    // Commercial Models
+    '25kW/Model H': 'B1',
+    '30kW/Model I': 'B2',
+    '45kW/Model J': 'B3',
+    '60kW/Model K': 'B4',
+    '80kW/Model L': 'B5',
+    '30kW/Model M': 'B6', // Diesel Series
+    '50kW/Model N': 'B7', // Diesel Series
+  
+    // Industrial Models
+    'Industrial O': 'C1', // Custom
   };
   
   function getGeneratorData(modelName: string) {
     const generatorId = modelMap[modelName];
     if (!generatorId) {
       console.log('No generator ID found for this model.');
-      return;
+      return null;
     }
   
     // Consolidate data from all sources
@@ -98,44 +107,27 @@ const GeneratorsScreen = () => {
     const generatorInfo = allData.find(generator => generator.id === generatorId);
   
     if (generatorInfo) {
-      console.log(`Generator Name: ${generatorInfo.name}`);
-      console.log(`Specifications:`, generatorInfo.specifications);
+      return {
+        name: generatorInfo.name,
+        orderId: generatorInfo.orderId,
+        specifications: generatorInfo.specifications,
+      };
     } else {
       console.log('No generator data found for this model.');
+      return null;
     }
   }
   
-  {/* Usage example
-
-  const selectedModel = '25kW/Model B';
-  getGeneratorData(selectedModel);
-
-  */}
-  
-  const handleOpenInstallationModal = () => {
-    setShowInstallation(true);
-  };
-
-  const handleCloseInstallationModal = () => {
-    setShowInstallation(false);
-  };
-
-  const handleInfoClick = () => {
-    // Consolidate data from all sources
-    const allData = [...ResidentialGeneratorData, ...CommercialGeneratorData, ...IndustrialGeneratorData];
+  const handleInfoClick = (modelName: string) => {
+    const generatorData = getGeneratorData(modelName);
     
-    // Find generator in the combined data
-    const generator = allData.find((item: { id: string }) => item.id === generatorId);
-    
-    // Set generator info and show the information modal
-    setGeneratorInfo(generator || null);
-    setShowInfo(true);
-  };
-  
-
-  const handleCloseInfo = () => {
-    setShowInfo(false);
-    setGeneratorInfo(null);
+    if (generatorData) {
+      setGeneratorInfo(generatorData);
+      setShowInfo(true);
+    } else {
+      setGeneratorInfo(null);
+      setShowInfo(false);
+    }
   };
 
   // Add animated value for the scrolling text
@@ -150,6 +142,19 @@ const GeneratorsScreen = () => {
     setInstallationJobs([...installationJobs, newJob]);
     setJobKey('');
     setModalVisible(false);
+  };
+
+  const handleOpenInstallationModal = () => {
+    setShowInstallation(true);
+  };
+
+  const handleCloseInstallationModal = () => {
+    setShowInstallation(false);
+  };
+
+  const handleCloseInfo = () => {
+    setShowInfo(false);
+    setGeneratorInfo(null);
   };
 
   useEffect(() => {
@@ -220,9 +225,6 @@ const GeneratorsScreen = () => {
               source={require('../assets/images/gen.png')}
               style={styles.jobImage}
             />
-            <View style={styles.barContainer}>
-              <Animated.View style={[styles.barContainer, {width: barWidth}]} />
-            </View>
             <View style={styles.jobTextContainer}>  
               <Text style={styles.jobGeneratorInfo}>Generator: {job.generatorInfo}</Text>
             </View>
