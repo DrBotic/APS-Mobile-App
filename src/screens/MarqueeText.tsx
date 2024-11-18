@@ -1,19 +1,24 @@
-import React, { useRef, useEffect, useState } from 'react'; // Import useState here
+import React, { useRef, useEffect, useState } from 'react';
 import { Animated, Text, View, StyleSheet, Easing, Dimensions } from 'react-native';
+import { useDarkMode } from '../components/DarkModeContext.tsx';
 
 const { width } = Dimensions.get('window');
 
 const MarqueeText: React.FC<{ text: string }> = ({ text }) => {
   const animatedValue = useRef(new Animated.Value(0)).current;
-  const [textWidth, setTextWidth] = useState(0); // Initialize textWidth state
+  const [textWidth, setTextWidth] = useState(0);
+  
+  // Get dark mode status and determine styles
+  const { isDarkMode } = useDarkMode();
+  const styles = isDarkMode ? darkStyles : lightStyles;
 
   useEffect(() => {
     const startAnimation = () => {
-      animatedValue.setValue(0); // Reset animation
+      animatedValue.setValue(0);
       Animated.loop(
         Animated.timing(animatedValue, {
           toValue: 1,
-          duration: 10000, // Adjust duration for scroll speed
+          duration: 10000,
           easing: Easing.linear,
           useNativeDriver: true,
         })
@@ -22,33 +27,30 @@ const MarqueeText: React.FC<{ text: string }> = ({ text }) => {
     startAnimation();
   }, [animatedValue]);
 
-  // Move the full width of the text to the left
   const translateX = animatedValue.interpolate({
     inputRange: [0, 1],
-    outputRange: [width, -textWidth], // Moves from the right side of the screen to the left
+    outputRange: [width, -textWidth],
   });
 
   return (
     <View style={styles.container}>
       <Animated.View style={{ flexDirection: 'row', transform: [{ translateX }] }}>
-        {/* First instance of the text */}
         <Text
           style={styles.marqueeText}
           onLayout={(event) => {
             const { width: measuredWidth } = event.nativeEvent.layout;
-            setTextWidth(measuredWidth); // Set the measured width of the text
+            setTextWidth(measuredWidth);
           }}
         >
           {text}
         </Text>
-        {/* Duplicate instance of the text for seamless scrolling */}
         <Text style={styles.marqueeText}>{text}</Text>
       </Animated.View>
     </View>
   );
 };
 
-const styles = StyleSheet.create({
+const lightStyles = StyleSheet.create({
   container: {
     overflow: 'hidden',
     width: '100%',
@@ -56,10 +58,21 @@ const styles = StyleSheet.create({
   marqueeText: {
     fontSize: 20,
     fontWeight: 'bold',
-    whiteSpace: 'nowrap', // Not directly applicable in React Native but indicates intent
-    // Use a large enough width to prevent wrapping; alternatively, set to a large value
-    width: 'auto', // or specify a width if you know the text length
-    flexShrink: 0, // Prevents text from shrinking
+    color: '#000000', // Set text color for light mode
+    flexShrink: 0,
+  },
+});
+
+const darkStyles = StyleSheet.create({
+  container: {
+    overflow: 'hidden',
+    width: '100%',
+  },
+  marqueeText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#FFFFFF', // Set text color for dark mode
+    flexShrink: 0,
   },
 });
 

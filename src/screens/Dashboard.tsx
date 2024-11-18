@@ -50,7 +50,7 @@ const Dashboard = () => {
     'Installation Completed',
   ];
 
-  const currentStage = 3; // Example of current stage
+  const currentStage = 2; // Example of current stage
   
   const handleOpenInstallationModal = () => {
     setShowInstallation(true);
