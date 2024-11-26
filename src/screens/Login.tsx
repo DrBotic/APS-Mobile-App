@@ -158,15 +158,15 @@ const lightStyles = StyleSheet.create({
 
 const darkStyles = StyleSheet.create({
   background: {
-    backgroundColor: '#3A3A3A',  
+    backgroundColor: '#202020',  // Dark grey background
     flex: 1,
   },
   safeArea: {
     flex: 1,
-    backgroundColor: '#4A4A4A', 
+    backgroundColor: '#202020',  // Matching dark grey for safe area
   },
   logoContainer: {
-    backgroundColor: '#393939',  
+    backgroundColor: '#2C2C2C',  // Medium grey for logo container
     paddingTop: 20,
     alignItems: 'center',
     paddingBottom: 10,
@@ -181,7 +181,7 @@ const darkStyles = StyleSheet.create({
     alignItems: 'center',
   },
   container: {
-    backgroundColor: '#5A5A5A',
+    backgroundColor: '#2C2C2C',  // Medium grey for containers
     padding: Spacing.space_50,
     borderRadius: BorderRadius.radius_20,
     width: '80%',
@@ -194,22 +194,22 @@ const darkStyles = StyleSheet.create({
   label: {
     fontSize: FontSize.size_normal,
     fontFamily: FontFamily.montserrat_regular,
-    color: '#FFFFFF', 
+    color: '#FFFFFF',  // White color for labels for high contrast
     marginBottom: Spacing.space_20,
   },
   input: {
     width: '100%',
     height: 40,
-    borderColor: '#888888',  
+    borderColor: '#888888',  // Light grey border color
     borderWidth: 1,
     borderRadius: BorderRadius.radius_8,
     paddingHorizontal: Spacing.space_20,
     marginBottom: Spacing.space_30,
-    color: '#FFFFFF', 
+    color: '#FFFFFF',  // White text for input fields
     fontFamily: FontFamily.sansSerif_regular,
   },
   button: {
-    backgroundColor: '#2C2C2C', 
+    backgroundColor: '#3C3C3C',  // Slightly lighter grey for buttons
     width: '100%',
     paddingVertical: Spacing.space_20,
     borderRadius: BorderRadius.radius_30,
@@ -217,12 +217,12 @@ const darkStyles = StyleSheet.create({
     marginVertical: Spacing.space_20,
   },
   buttonText: {
-    color: '#FFFFFF', 
+    color: '#FFFFFF',  // White text for button
     fontSize: FontSize.size_medium,
     fontFamily: FontFamily.montserrat_bold,
   },
   linkText: {
-    color: '#CCCCCC',
+    color: '#CCCCCC',  // Light grey color for links
     textDecorationLine: 'underline',
     fontSize: FontSize.size_small,
     marginVertical: Spacing.space_20,

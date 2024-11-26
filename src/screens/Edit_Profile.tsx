@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, FunctionComponent, useRef } from 'react';
 import {
   StyleSheet,
@@ -23,13 +22,12 @@ import type { ResidentialGenerator } from '../data/ResidentialGeneratorData.ts';
 import MarqueeText from './MarqueeText.tsx';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Switch } from 'react-native';
-import CheckBox from '@react-native-community/checkbox';
 import { useDarkMode } from '../components/DarkModeContext.tsx';
 
 
 const {width} = Dimensions.get('screen');
 
-const ProfileScreen = () => {
+const EditProfileScreen = () => {
     const [pushNotifications, setPushNotifications] = useState(false);
     const [textNotifications, setTextNotifications] = useState(false);
     const [emailNotifications, setEmailNotifications] = useState(false);
@@ -47,11 +45,6 @@ const ProfileScreen = () => {
     const generatorId = 'A1';
     const [menuVisible, setMenuVisible] = useState(false);
     const slideAnim = useRef(new Animated.Value(-250)).current;
-    const [apsDefaultMode, setApsDefaultMode] = useState(true);
-    const [mapChecked, setMapChecked] = useState(true);
-    const [darkMode, setDarkMode] = useState(false);
-    const [lightMode, setLightMode] = useState(false);
-    const [showPassword, setShowPassword] = useState(false);
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [email, setEmail] = useState('');
@@ -59,38 +52,42 @@ const ProfileScreen = () => {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
 
-
-    useEffect(() => {
-      // Fetch user data from the database when the component mounts
-      const fetchUserData = async () => {
-        try {
-          // Uncomment the following lines when you are able to use the actual API
-          // const response = await fetch('YOUR_API_ENDPOINT'); // Replace with actual API endpoint
-          // const userData = await response.json();
-    
-          // sample data
-          const sampleData = {
-            firstName: 'Emily',
-            lastName: 'Harrison',
-            email: 'Emily.harrison@example.com',
-            username: 'emily_h23',
-            password: 'Testing_password',
-          };
-    
-          // Set the sample data as the initial values
-          setFirstName(sampleData.firstName);
-          setLastName(sampleData.lastName);
-          setEmail(sampleData.email);
-          setUsername(sampleData.username);
-          setPassword(sampleData.password);
-          setConfirmPassword(sampleData.password);
-        } catch (error) {
-          console.error("Error fetching user data:", error);
-        }
+    const handleSubmit = () => {
+        console.log("Form submitted with:", { firstName, lastName, email, username, password, confirmPassword });
       };
-    
-      fetchUserData();
-    }, []);
+
+      useEffect(() => {
+        // Fetch user data from the database when the component mounts
+        const fetchUserData = async () => {
+          try {
+            // Uncomment the following lines when you are able to use the actual API
+            // const response = await fetch('YOUR_API_ENDPOINT'); // Replace with actual API endpoint
+            // const userData = await response.json();
+      
+            // sample data
+            const sampleData = {
+              firstName: 'Emily',
+              lastName: 'Harrison',
+              email: 'Emily.harrison@example.com',
+              username: 'idk',
+              password: 'Testing_password',
+            };
+      
+            // Set the sample data as the initial values
+            setFirstName(sampleData.firstName);
+            setLastName(sampleData.lastName);
+            setEmail(sampleData.email);
+            setUsername(sampleData.username);
+            setPassword(sampleData.password);
+            setConfirmPassword(sampleData.password);
+          } catch (error) {
+            console.error("Error fetching user data:", error);
+          }
+        };
+      
+        fetchUserData();
+      }, []);
+      
 
   const toggleMenu = () => {
     if (menuVisible) {
@@ -108,6 +105,7 @@ const ProfileScreen = () => {
       }).start();
     }
   };
+
 
   // Mock data for stages and current stage
   const installationStages = [
@@ -152,62 +150,75 @@ const ProfileScreen = () => {
     isDarkMode ? (
       <View style={[styles.background, { backgroundColor: '#202020' }]}>
         <View style={styles.logoContainer}>
-          <TouchableOpacity onPress={toggleMenu} style={styles.menuIcon}>
-            <Image 
-              source={require('../assets/images/Menu_DM.png')}
-              style={styles.menuIcon}
-              resizeMode="contain"
-            />
-          </TouchableOpacity>
-          <Image
-            source={require('../assets/images/anderson-power-logo.png')}
-            style={styles.logo}
-            resizeMode="contain"
-          />
-        </View>
+      <TouchableOpacity onPress={toggleMenu} style={styles.menuIcon}>
+        <Image 
+          source={require('../assets/images/Menu_DM.png')}
+          style={styles.menuIcon}
+          resizeMode="contain"
+        />
+      </TouchableOpacity>
+
+        <Image
+          source={require('../assets/images/anderson-power-logo.png')}
+          style={styles.logo}
+          resizeMode="contain"
+        />
+      </View>
 
         <ScrollView contentContainerStyle={styles.contentContainer}>
-          <Text style={styles.title}>Profile</Text>
-          <View style={styles.line} />
-          <ScrollView contentContainerStyle={styles.contentContainer}>
-            <View style={[styles.profileContainer, { justifyContent: 'space-between', paddingVertical: 20 }]}>
-              {/* Removed Username row */}
-              <View style={styles.row}>
-                <Text style={styles.label}>Name</Text>
-                <Text style={styles.value}>{firstName} {lastName}</Text>
-              </View>
-
-              <View style={styles.row}>
-                <Text style={styles.label}>Email:</Text>
-              </View>
-              <View>
-                <Text style={styles.value}>{email}</Text>
-              </View>
-
-              <View style={styles.row}>
-                <Text style={styles.label}>Password</Text>
-                <Text style={styles.value}>{showPassword ? password : "**********"}</Text>
-                <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-                  <Text style={styles.togglePassword}>{showPassword ? "Hide" : "Show"}</Text>
-                </TouchableOpacity>
-              </View>
-
-              <View style={styles.row}>
-                <Text style={styles.label}>Dark Mode</Text>
-                <Switch
-                  value={isDarkMode}
-                  onValueChange={toggleDarkMode}
-                  trackColor={{ false: Color.gray, true: Color.grayDark }}
-                />
-              </View>
-
-              <TouchableOpacity style={styles.editButton} onPress={() => navigation.navigate('Edit_Profile')}>
-                <Text style={styles.editButtonText}>Edit</Text>
-              </TouchableOpacity>
+        <Text style={styles.title}>Edit Profile</Text>
+        <View style={styles.formContainer}>
+            <Text style={styles.label}>Enter your First Name</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="First Name"
+            value={firstName}
+            onChangeText={setFirstName}
+            placeholderTextColor="#BBBBBB"
+          />
+          <Text style={styles.label}>Enter your Last Name</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Last Name"
+            value={lastName}
+            onChangeText={setLastName}
+            placeholderTextColor="#BBBBBB"
+          />
+          <Text style={styles.label}>Enter your Email</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Email"
+            value={email}
+            onChangeText={setEmail}
+            keyboardType="email-address"
+            placeholderTextColor="#BBBBBB"
+          />
+          <Text style={styles.label}>Enter your Password</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Password"
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry
+            placeholderTextColor="#BBBBBB"
+          />
+          <Text style={styles.label}>Confirm your Password</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Confirm Password"
+            value={confirmPassword}
+            onChangeText={setConfirmPassword}
+            secureTextEntry
+            placeholderTextColor="#BBBBBB"
+          />
+          <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}  onPress={() => navigation.navigate('Profile')}>
+            <Text style={styles.submitButtonText}>Submit</Text>
+          </TouchableOpacity>
             </View>
-          </ScrollView>
+        </ScrollView>
 
-    {/* Animated Side Menu */}
+        {/* Animated Side Menu */}
+        {/* Animated Side Menu */}
     <Animated.View style={[styles.menuContainer, { transform: [{ translateX: slideAnim }] }]}>
           {/* Logo Icon */}
           <View style={styles.logoContainer}>
@@ -246,7 +257,7 @@ const ProfileScreen = () => {
             <Text style={styles.menuText}>Notifications</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Service_Request')}>
+          <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('')}>
             <Image
               source={require('../assets/images/Tool_DM.png')}
               style={styles.adLogo}
@@ -255,7 +266,7 @@ const ProfileScreen = () => {
             <Text style={styles.menuText}>Service Request</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Faq')}>
+          <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('')}>
             <Image
               source={require('../assets/images/FAQ_DM.png')}
               style={styles.adLogo}
@@ -264,7 +275,7 @@ const ProfileScreen = () => {
             <Text style={styles.menuText}>FAQ</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('About_Us')}>
+          <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('')}>
             <Image
               source={require('../assets/images/About_DM.png')}
               style={styles.adLogo}
@@ -282,21 +293,14 @@ const ProfileScreen = () => {
             <Text style={styles.menuText}>Logout</Text>
           </TouchableOpacity>
         </Animated.View>
-        {/* Ad Section with scrolling text */}
-        <View style={styles.adContainer}>
-          <Animated.View style={[animatedStyle, styles.scrollingText]}>
-            <MarqueeText text="This is a scrolling marquee text in React Native!" />
-          </Animated.View>
-        </View>
-      </ScrollView>
       </View>
     ) : (
-      <ImageBackground
-        source={require('../assets/images/map.png')}
-        resizeMode="cover"
-        blurRadius={5}
-        style={styles.background}
-      >
+    <ImageBackground
+      source={require('../assets/images/map.png')}
+      resizeMode="cover"
+      blurRadius={5}
+      style={styles.background}
+    >
       <View style={styles.logoContainer}>
       <TouchableOpacity onPress={toggleMenu} style={styles.menuIcon}>
         <Image 
@@ -313,48 +317,60 @@ const ProfileScreen = () => {
         />
       </View>
 
-      <ScrollView contentContainerStyle={styles.contentContainer}>
-          <Text style={styles.title}>Profile</Text>
-          <View style={styles.line} />
-          <ScrollView contentContainerStyle={styles.contentContainer}>
-            <View style={[styles.profileContainer, { justifyContent: 'space-between', paddingVertical: 20 }]}>
-              {/* Removed Username row */}
-              <View style={styles.row}>
-                <Text style={styles.label}>Name</Text>
-                <Text style={styles.value}>{firstName} {lastName}</Text>
-              </View>
-
-              <View style={styles.row}>
-                <Text style={styles.label}>Email:</Text>
-              </View>
-              <View>
-                <Text style={styles.value}>{email}</Text>
-              </View>
-
-              <View style={styles.row}>
-                <Text style={styles.label}>Password</Text>
-                <Text style={styles.value}>{showPassword ? password : "**********"}</Text>
-                <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-                  <Text style={styles.togglePassword}>{showPassword ? "Hide" : "Show"}</Text>
-                </TouchableOpacity>
-              </View>
-
-              <View style={styles.row}>
-                <Text style={styles.label}>Dark Mode</Text>
-                <Switch
-                  value={isDarkMode}
-                  onValueChange={toggleDarkMode}
-                  trackColor={{ false: Color.gray, true: Color.grayDark }}
-                />
-              </View>
-
-              <TouchableOpacity style={styles.editButton} onPress={() => navigation.navigate('Edit_Profile')}>
-                <Text style={styles.editButtonText}>Edit</Text>
-              </TouchableOpacity>
+        <ScrollView contentContainerStyle={styles.contentContainer}>
+        <Text style={styles.title}>Edit Profile</Text>
+        <View style={styles.formContainer}>
+            <Text style={styles.label}>Enter your First Name</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="First Name"
+            value={firstName}
+            onChangeText={setFirstName}
+            placeholderTextColor="#BBBBBB"
+          />
+          <Text style={styles.label}>Enter your Last Name</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Last Name"
+            value={lastName}
+            onChangeText={setLastName}
+            placeholderTextColor="#BBBBBB"
+          />
+          <Text style={styles.label}>Enter your Email</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Email"
+            value={email}
+            onChangeText={setEmail}
+            keyboardType="email-address"
+            placeholderTextColor="#BBBBBB"
+          />
+          <Text style={styles.label}>Enter your Password</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Password"
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry
+            placeholderTextColor="#BBBBBB"
+          />
+          <Text style={styles.label}>Confirm your Password</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Confirm Password"
+            value={confirmPassword}
+            onChangeText={setConfirmPassword}
+            secureTextEntry
+            placeholderTextColor="#BBBBBB"
+          />
+          <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}  onPress={() => navigation.navigate('Profile')}>
+            <Text style={styles.submitButtonText}>Submit</Text>
+          </TouchableOpacity>
             </View>
-          </ScrollView>
-    
-    {/* Animated Side Menu */}
+        </ScrollView>
+
+        {/* Animated Side Menu */}
+        {/* Animated Side Menu */}
     <Animated.View style={[styles.menuContainer, { transform: [{ translateX: slideAnim }] }]}>
           {/* Logo Icon */}
           <View style={styles.logoContainer}>
@@ -393,7 +409,7 @@ const ProfileScreen = () => {
             <Text style={styles.menuText}>Notifications</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Service_Request')}>
+          <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('')}>
             <Image
               source={require('../assets/images/Tool.png')}
               style={styles.adLogo}
@@ -402,7 +418,7 @@ const ProfileScreen = () => {
             <Text style={styles.menuText}>Service Request</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Faq')}>
+          <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('')}>
             <Image
               source={require('../assets/images/FAQ.png')}
               style={styles.adLogo}
@@ -411,7 +427,7 @@ const ProfileScreen = () => {
             <Text style={styles.menuText}>FAQ</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('About_Us')}>
+          <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('')}>
             <Image
               source={require('../assets/images/About.png')}
               style={styles.adLogo}
@@ -429,19 +445,12 @@ const ProfileScreen = () => {
             <Text style={styles.menuText}>Logout</Text>
           </TouchableOpacity>
         </Animated.View>
-        {/* Ad Section with scrolling text */}
-        <View style={styles.adContainer}>
-          <Animated.View style={[animatedStyle, styles.scrollingText]}>
-            <MarqueeText text="This is a scrolling marquee text in React Native!" />
-          </Animated.View>
-        </View>
-      </ScrollView>
     </ImageBackground>
     )
   );
 };
 
-export default ProfileScreen;
+export default EditProfileScreen;
 
 const lightStyles = StyleSheet.create({
   background: {
@@ -499,7 +508,6 @@ const lightStyles = StyleSheet.create({
   scrollingText: {
     fontSize: FontSize.size_medium,
     fontFamily: FontFamily.montserrat_regular,
-    color: 'black',
   },
   container: {
     backgroundColor: Color.white,
@@ -554,47 +562,46 @@ const lightStyles = StyleSheet.create({
     height: 90,
     marginRight: Spacing.space_10,
   },
-  profileContainer: {
+  formContainer: {
     backgroundColor: Color.white,
-    padding: Spacing.space_20,
-    borderRadius: BorderRadius.radius_10,
+    borderRadius: BorderRadius.radius_20,
     width: '90%',
-    height: '85%',
-    alignItems: 'center',
-  },
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    width: '100%',
-    marginTop: Spacing.space_40,
+    height: '80%',
     padding: Spacing.space_20,
+    alignItems: 'center',
+    shadowColor: Color.grayDark,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
   },
-  label: {
-    fontSize: FontSize.size_medium,
-    fontFamily: FontFamily.montserrat_regular,
-    color: 'rgba(1, 1, 1, 1)',
+  input: {
+    width: '95%',
+    height: 40,
+    borderColor: Color.gray,
+    borderWidth: 1,
+    borderRadius: BorderRadius.radius_10,
+    paddingHorizontal: Spacing.space_10,
+    marginBottom: Spacing.space_40,
+    marginTop: Spacing.space_30,
   },
-  value: {
-    fontSize: FontSize.size_medium,
-    fontFamily: FontFamily.montserrat_regular,
-    color: Color.grayDark,
-  },
-  togglePassword: {
-    color: Color.primary,
-    fontSize: FontSize.size_small,
-  },
-  editButton: {
+  submitButton: {
     backgroundColor: Color.red,
+    borderRadius: BorderRadius.radius_10,
     paddingVertical: Spacing.space_10,
-    paddingHorizontal: Spacing.space_40,
-    borderRadius: BorderRadius.radius_5,
-    marginTop: Spacing.space_40,
+    paddingHorizontal: Spacing.space_20,
+    marginTop: Spacing.space_10,
   },
-  editButtonText: {
+  submitButtonText: {
     color: Color.white,
     fontSize: FontSize.size_medium,
     fontFamily: FontFamily.montserrat_bold,
+  },  
+  label: {
+    fontSize: FontSize.size_normal,
+    fontFamily: FontFamily.montserrat_regular,
+    color: '#111111',
+    marginBottom: Spacing.space_20,
+    paddingTop: Spacing.space_30,
   },
 });
 
@@ -710,54 +717,46 @@ const darkStyles = StyleSheet.create({
     height: 90,
     marginRight: Spacing.space_10,
   },
-  profileContainer: {
+  formContainer: {
     backgroundColor: '#2C2C2C', // Medium grey for profile container
     padding: Spacing.space_20,
     borderRadius: BorderRadius.radius_10,
     width: '90%',
     height: '85%',
     alignItems: 'center',
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
   },
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    width: '100%',
-    marginTop: Spacing.space_40,
-    padding: Spacing.space_20,
+  input: {
+    width: '95%',
+    height: 40,
+    borderColor: '#666666', // Darker grey border
+    borderWidth: 1,
+    borderRadius: BorderRadius.radius_10,
+    paddingHorizontal: Spacing.space_10,
+    marginBottom: Spacing.space_40,
+    marginTop: Spacing.space_30,
+    color: '#FFFFFF', // White input text
   },
-  label: {
-    fontSize: FontSize.size_medium,
-    fontFamily: FontFamily.montserrat_regular,
-    color: '#F5F5F5', // Lighter grey for readability
-  },
-  value: {
-    fontSize: FontSize.size_medium,
-    fontFamily: FontFamily.montserrat_regular,
-    color: '#E0E0E0', // Close to white for value text
-  },
-  togglePassword: {
-    color: '#007AFF', // Blue accent for password toggle
-    fontSize: FontSize.size_small,
-  },
-  editButton: {
-    backgroundColor: '#FF3B30', // Bright red for the edit button
+  submitButton: {
+    backgroundColor: '#FF3B30', // Bright red for the button
+    borderRadius: BorderRadius.radius_10,
     paddingVertical: Spacing.space_10,
-    paddingHorizontal: Spacing.space_40,
-    borderRadius: BorderRadius.radius_5,
-    marginTop: Spacing.space_40,
+    paddingHorizontal: Spacing.space_20,
+    marginTop: Spacing.space_10,
   },
-  editButtonText: {
+  submitButtonText: {
     color: '#FFFFFF', // White text on red button
     fontSize: FontSize.size_medium,
     fontFamily: FontFamily.montserrat_bold,
   },
-  /*transparentBorder: {
-    position: 'absolute',
-    top: 0,
-    left: 250, // Match this to the menuContainer width
-    width: 20, // Adjust to control border thickness
-    height: '100%',
-    backgroundColor: 'rgba(44, 44, 44, 0.7)', // 50% opacity for transparency
-  },*/
+  label: {
+    fontSize: FontSize.size_normal,
+    fontFamily: FontFamily.montserrat_regular,
+    color: '#F5F5F5', // Lighter grey for labels
+    marginBottom: Spacing.space_20,
+    paddingTop: Spacing.space_30,
+  },
 });

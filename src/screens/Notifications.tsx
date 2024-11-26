@@ -104,16 +104,12 @@ const NotificationsScreen = () => {
   const barWidth = React.useRef(new Animated.Value(0)).current;
 
   return (
-    <ImageBackground
-      source={require('../assets/images/map.png')}
-      resizeMode="cover"
-      blurRadius={5}
-      style={styles.background}
-    >
-      <View style={styles.logoContainer}>
+    isDarkMode ? (
+      <View style={[styles.background, { backgroundColor: '#202020' }]}>
+        <View style={styles.logoContainer}>
       <TouchableOpacity onPress={toggleMenu} style={styles.menuIcon}>
         <Image 
-          source={require('../assets/images/menu.png')}
+          source={require('../assets/images/Menu_DM.png')}
           style={styles.menuIcon}
           resizeMode="contain"
         />
@@ -143,13 +139,138 @@ const NotificationsScreen = () => {
         />
       </View>
 
-      {/* Text Notifications */}
+      {/* Email Notifications */}
       <View style={styles.notificationBox}>
-        <Text style={styles.notificationText}>Text Notifications</Text>
+        <Text style={styles.notificationText}>Email Notifications</Text>
         <Switch
-          value={textNotifications}
-          onValueChange={setTextNotifications}
-          thumbColor={textNotifications ? Color.primary : Color.gray}
+          value={emailNotifications}
+          onValueChange={setEmailNotifications}
+          thumbColor={emailNotifications ? Color.primary : Color.gray}
+          trackColor={{ false: Color.lightGray, true: Color.primary }}
+        />
+      </View>
+    </ScrollView>
+
+        {/* Animated Side Menu */}
+        <Animated.View style={[styles.menuContainer, { transform: [{ translateX: slideAnim }] }]}>
+          {/* Logo Icon */}
+          <View style={styles.logoContainer}>
+            <Image
+              source={require('../assets/images/Arrow_logo.png')}
+              style={styles.Menu_Logo}
+              resizeMode="contain"
+              />
+          </View>
+
+          {/* Menu Items */}
+          <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('HomeScreen')}>
+            <Image
+            source={require('../assets/images/Home_DM.png')}
+            style={styles.adLogo}
+            resizeMode="contain"
+            />
+            <Text style={styles.menuText}>Home</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Profile')}>
+            <Image
+              source={require('../assets/images/Profile_DM.png')}
+              style={styles.adLogo}
+              resizeMode="contain"
+              />
+            <Text style={styles.menuText}>Profile</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Notifications')}>
+            <Image
+              source={require('../assets/images/Bell_DM.png')}
+              style={styles.adLogo}
+              resizeMode="contain"
+              />
+            <Text style={styles.menuText}>Notifications</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Service_Request')}>
+            <Image
+              source={require('../assets/images/Tool_DM.png')}
+              style={styles.adLogo}
+              resizeMode="contain"
+              />
+            <Text style={styles.menuText}>Service Request</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Faq')}>
+            <Image
+              source={require('../assets/images/FAQ_DM.png')}
+              style={styles.adLogo}
+              resizeMode="contain"
+              />
+            <Text style={styles.menuText}>FAQ</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('About_Us')}>
+            <Image
+              source={require('../assets/images/About_DM.png')}
+              style={styles.adLogo}
+              resizeMode="contain"
+              />
+            <Text style={styles.menuText}>About Us</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Login')}>
+            <Image
+              source={require('../assets/images/Logout_DM.png')}
+              style={styles.adLogo}
+              resizeMode="contain"
+              />
+            <Text style={styles.menuText}>Logout</Text>
+          </TouchableOpacity>
+        </Animated.View>
+
+        {/* Ad Section with scrolling text */}
+        <View style={styles.adContainer}>
+          <Animated.View style={[animatedStyle, styles.scrollingTextContainer]}>
+            <MarqueeText text="This is a scrolling marquee text in React Native!" />
+          </Animated.View>
+        </View>
+      </ScrollView>
+      </View>
+    ) : (
+    <ImageBackground
+      source={require('../assets/images/map.png')}
+      resizeMode="cover"
+      blurRadius={5}
+      style={styles.background}
+    >
+      <View style={styles.logoContainer}>
+      <TouchableOpacity onPress={toggleMenu} style={styles.menuIcon}>
+        <Image 
+          source={require('../assets/images/Menu.png')}
+          style={styles.menuIcon}
+          resizeMode="contain"
+        />
+      </TouchableOpacity>
+
+        <Image
+          source={require('../assets/images/anderson-power-logo.png')}
+          style={styles.logo}
+          resizeMode="contain"
+        />
+      </View>
+
+      <ScrollView contentContainerStyle={styles.contentContainer}>
+        <Text style={styles.title}>My Notifications</Text>
+        <View style={styles.line} />
+
+        <ScrollView contentContainerStyle={styles.notificationcontainer}>
+
+      {/* Push Notifications */}
+      <View style={styles.notificationBox}>
+        <Text style={styles.notificationText}>Push Notifications</Text>
+        <Switch
+          value={pushNotifications}
+          onValueChange={setPushNotifications}
+          thumbColor={pushNotifications ? Color.primary : Color.gray}
           trackColor={{ false: Color.lightGray, true: Color.primary }}
         />
       </View>
@@ -164,47 +285,80 @@ const NotificationsScreen = () => {
           trackColor={{ false: Color.lightGray, true: Color.primary }}
         />
       </View>
-
-      {/* Pause All Notifications */}
-      <View style={styles.notificationBox}>
-        <View>
-          <Text style={styles.notificationText}>Pause all Notifications</Text>
-          <Text style={styles.subText}>For one day</Text>
-        </View>
-        <Switch
-          value={pauseNotifications}
-          onValueChange={setPauseNotifications}
-          thumbColor={pauseNotifications ? Color.primary : Color.gray}
-          trackColor={{ false: Color.lightGray, true: Color.primary }}
-        />
-      </View>
     </ScrollView>
 
         {/* Animated Side Menu */}
         <Animated.View style={[styles.menuContainer, { transform: [{ translateX: slideAnim }] }]}>
           {/* Logo Icon */}
           <View style={styles.logoContainer}>
-            <Ionicons name="sync-circle-outline" size={50} color="green" />
+            <Image
+              source={require('../assets/images/Arrow_logo.png')}
+              style={styles.Menu_Logo}
+              resizeMode="contain"
+              />
           </View>
 
           {/* Menu Items */}
           <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('HomeScreen')}>
-            <Ionicons name="home-outline" size={24} color="black" />
+            <Image
+            source={require('../assets/images/Home.png')}
+            style={styles.adLogo}
+            resizeMode="contain"
+            />
             <Text style={styles.menuText}>Home</Text>
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Profile')}>
-            <Ionicons name="person-outline" size={24} color="black" />
+            <Image
+              source={require('../assets/images/Profile.png')}
+              style={styles.adLogo}
+              resizeMode="contain"
+              />
             <Text style={styles.menuText}>Profile</Text>
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Notifications')}>
-            <Ionicons name="notifications-outline" size={24} color="black" />
+            <Image
+              source={require('../assets/images/Bell.png')}
+              style={styles.adLogo}
+              resizeMode="contain"
+              />
             <Text style={styles.menuText}>Notifications</Text>
           </TouchableOpacity>
 
+          <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Service_Request')}>
+            <Image
+              source={require('../assets/images/Tool.png')}
+              style={styles.adLogo}
+              resizeMode="contain"
+              />
+            <Text style={styles.menuText}>Service Request</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Faq')}>
+            <Image
+              source={require('../assets/images/FAQ.png')}
+              style={styles.adLogo}
+              resizeMode="contain"
+              />
+            <Text style={styles.menuText}>FAQ</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('About_Us')}>
+            <Image
+              source={require('../assets/images/About.png')}
+              style={styles.adLogo}
+              resizeMode="contain"
+              />
+            <Text style={styles.menuText}>About Us</Text>
+          </TouchableOpacity>
+
           <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Login')}>
-            <Ionicons name="log-out-outline" size={24} color="black" />
+            <Image
+              source={require('../assets/images/Logout.png')}
+              style={styles.adLogo}
+              resizeMode="contain"
+              />
             <Text style={styles.menuText}>Logout</Text>
           </TouchableOpacity>
         </Animated.View>
@@ -217,6 +371,7 @@ const NotificationsScreen = () => {
         </View>
       </ScrollView>
     </ImageBackground>
+    )
   );
 };
 
@@ -325,6 +480,12 @@ const lightStyles = StyleSheet.create({
   menuText: {
     fontSize: 18,
     marginLeft: 10,
+    color: 'black',
+  },
+  Menu_Logo: {
+    width: 90,
+    height: 90,
+    marginRight: Spacing.space_10,
   },
   notificationcontainer: {
     flexGrow: 1,
@@ -361,14 +522,13 @@ const lightStyles = StyleSheet.create({
     fontFamily: FontFamily.montserrat_regular,
   },
 });
-
 const darkStyles = StyleSheet.create({
   background: {
     flex: 1,
-    backgroundColor: '#3A3A3A',
+    backgroundColor: '#121212', // Dark background for overall view
   },
   logoContainer: {
-    backgroundColor: '#393939',
+    backgroundColor: '#2C2C2C', // Medium grey for better contrast
     paddingTop: 20,
     alignItems: 'center',
     paddingBottom: 10,
@@ -386,22 +546,22 @@ const darkStyles = StyleSheet.create({
     fontSize: FontSize.size_large,
     fontFamily: FontFamily.montserrat_bold,
     marginBottom: Spacing.space_20,
-    color: Color.white,
-    textShadowColor: 'rgba(0, 0, 0, 0.5)',
+    color: '#FFFFFF', // White for strong contrast
+    textShadowColor: 'rgba(255, 255, 255, 0.2)', // Light white shadow
     textShadowOffset: { width: 1, height: 1 },
     textShadowRadius: 4,
   },
   line: {
     width: '80%',
     height: 2,
-    backgroundColor: Color.white,
+    backgroundColor: '#CCCCCC', // Light grey for lines
     marginBottom: Spacing.space_30,
   },
   adContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: '#5A5A5A',
+    backgroundColor: '#2C2C2C', // Medium grey for the ad container
     padding: Spacing.space_10,
     borderTopLeftRadius: BorderRadius.radius_20,
     borderTopRightRadius: BorderRadius.radius_20,
@@ -419,16 +579,17 @@ const darkStyles = StyleSheet.create({
   scrollingText: {
     fontSize: FontSize.size_medium,
     fontFamily: FontFamily.montserrat_regular,
+    color: '#FFFFFF', // Light grey, close to white
   },
   container: {
-    backgroundColor: '#5A5A5A',
+    backgroundColor: '#2C2C2C', // Medium grey for main containers
     padding: Spacing.space_50,
     borderRadius: BorderRadius.radius_20,
     width: '80%',
     alignItems: 'center',
-    shadowColor: Color.grayDark,
+    shadowColor: '#000000', // Black shadow for better contrast
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.3, // Slight opacity for shadow
     shadowRadius: 4,
     paddingTop: Spacing.space_50,
   },
@@ -454,7 +615,7 @@ const darkStyles = StyleSheet.create({
     left: 0,
     width: 250,
     height: '100%',
-    backgroundColor: 'rgba(255, 255, 255, 1)',
+    backgroundColor: '#2C2C2C', // Slightly lighter grey for sidebar
     paddingTop: 50,
     paddingHorizontal: 20,
   },
@@ -466,26 +627,32 @@ const darkStyles = StyleSheet.create({
   menuText: {
     fontSize: 18,
     marginLeft: 10,
+    color: '#FFFFFF', // Bright white for menu text
+  },
+  Menu_Logo: {
+    width: 90,
+    height: 90,
+    marginRight: Spacing.space_10,
   },
   notificationcontainer: {
     flexGrow: 1,
     padding: Spacing.space_20,
-    backgroundColor: '#000',
+    backgroundColor: '#202020', // Black for notification background
     alignItems: 'center',
   },
   notificationtitle: {
     fontSize: FontSize.size_large,
     fontFamily: FontFamily.montserrat_bold,
-    color: Color.white,
+    color: '#FFFFFF', // White for title text
     marginVertical: Spacing.space_30,
   },
   notificationBox: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: 'rgba(1, 1, 1, 1)',
+    backgroundColor: '#2D2D2D', // Darker background for notification box
     borderWidth: 2,
-    borderColor: Color.white,
+    borderColor: '#FFFFFF', // White border for contrast
     padding: Spacing.space_40,
     width: '90%',
     borderRadius: BorderRadius.radius_10,
@@ -493,12 +660,12 @@ const darkStyles = StyleSheet.create({
   },
   notificationText: {
     fontSize: FontSize.size_medium,
-    color: Color.white,
+    color: '#FFFFFF', // White text color
     fontFamily: FontFamily.montserrat_regular,
   },
   subText: {
     fontSize: FontSize.size_small,
-    color: Color.white,
+    color: '#B0B0B0', // Lighter grey for subtext
     fontFamily: FontFamily.montserrat_regular,
   },
 });

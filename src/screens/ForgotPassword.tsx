@@ -136,14 +136,14 @@ const lightStyles = StyleSheet.create({
 const darkStyles = StyleSheet.create({
   background: {
     flex: 1,
-    backgroundColor: '#3A3A3A',  // Dark background color
+    backgroundColor: '#202020',  // Dark grey background
   },
   safeArea: {
     flex: 1,
-    backgroundColor: '#4A4A4A',  // Dark safe area background
+    backgroundColor: '#202020',  // Matching dark grey for safe area
   },
   logoContainer: {
-    backgroundColor: '#393939',  // Dark background for logo container
+    backgroundColor: '#2C2C2C',  // Medium grey for logo container
     paddingTop: 20,
     alignItems: 'center',
     paddingBottom: 10,
@@ -158,12 +158,12 @@ const darkStyles = StyleSheet.create({
     alignItems: 'center',
   },
   container: {
-    backgroundColor: '#5A5A5A',  // Dark gray background for the main container
+    backgroundColor: '#2C2C2C',  // Medium grey for main container
     padding: Spacing.space_50,
     borderRadius: BorderRadius.radius_20,
     width: '80%',
     alignItems: 'center',
-    shadowColor: '#000',  // Dark shadow
+    shadowColor: '#000', 
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 4,
@@ -171,22 +171,22 @@ const darkStyles = StyleSheet.create({
   label: {
     fontSize: FontSize.size_normal,
     fontFamily: FontFamily.montserrat_regular,
-    color: '#FFFFFF',  // White label text color
+    color: '#FFFFFF',  // White color for labels
     marginBottom: Spacing.space_20,
   },
   input: {
     width: '100%',
     height: 40,
-    borderColor: '#888888',  // Gray border color
+    borderColor: '#888888',  // Light grey border for input fields
     borderWidth: 1,
     borderRadius: BorderRadius.radius_8,
     paddingHorizontal: Spacing.space_20,
     marginBottom: Spacing.space_30,
-    color: '#FFFFFF',  // White input text color
+    color: '#FFFFFF',  // White text for input fields
     fontFamily: FontFamily.sansSerif_regular,
   },
   button: {
-    backgroundColor: '#2C2C2C',  // Dark button background color
+    backgroundColor: '#3C3C3C',  // Lighter grey for buttons
     width: '100%',
     paddingVertical: Spacing.space_20,
     borderRadius: BorderRadius.radius_30,
@@ -194,12 +194,12 @@ const darkStyles = StyleSheet.create({
     marginVertical: Spacing.space_20,
   },
   buttonText: {
-    color: '#FFFFFF',  // White button text color
+    color: '#FFFFFF',  // White text for button
     fontSize: FontSize.size_medium,
     fontFamily: FontFamily.montserrat_bold,
   },
   linkText: {
-    color: '#CCCCCC',  // Light gray for links
+    color: '#CCCCCC',  // Light grey for links
     textDecorationLine: 'underline',
     fontSize: FontSize.size_small,
     marginVertical: Spacing.space_20,
