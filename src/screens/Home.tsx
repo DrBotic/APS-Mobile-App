@@ -18,8 +18,8 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import { Color, Spacing, BorderRadius, FontSize, FontFamily } from '../theme/themes.ts';
 import { ResidentialGeneratorData } from '../data/ResidentialGeneratorData.ts';
-import { CommercialGeneratorData } from '../data/ResidentialGeneratorData.ts';
-import { IndustrialGeneratorData } from '../data/ResidentialGeneratorData.ts';
+import { CommercialGeneratorData } from '../data/CommercialGeneratorData.ts';
+import { IndustrialGeneratorData } from '../data/IndustrialGeneratorData.ts';
 import type { ResidentialGenerator } from '../data/ResidentialGeneratorData.ts';
 import type { CommercialGenerator } from '../data/CommercialGeneratorData.ts';
 import type { IndustrialGenerator } from '../data/IndustrialGeneratorData.ts';
@@ -35,8 +35,8 @@ const GeneratorsScreen = () => {
   const [installationJobs, setInstallationJobs] = useState([]);
   const [showInfo, setShowInfo] = useState(false);
   const [showInstallation, setShowInstallation] = useState(false);
-  const [generatorInfo, setGeneratorInfo] = useState<ResidentialGenerator | null>(null);
-  const generatorId = 'A1';
+  const [generatorInfo, setGeneratorInfo] = useState<ResidentialGenerator | CommercialGenerator | IndustrialGenerator | null>(null);
+  const [currentJobIndex, setCurrentJobIndex] = useState(-1);
   const [generatorModelId, setGeneratorModelId] = useState('');
   const [menuVisible, setMenuVisible] = useState(false);
   const slideAnim = useRef(new Animated.Value(-250)).current;
@@ -69,8 +69,30 @@ const GeneratorsScreen = () => {
   ];
 
   const currentStage = 3; // Example of current stage
-  
-  const modelMap: { [key: string]: string } = {
+
+  const generatorId = 'C1'; // Example of current generator model
+
+  const handleInfoClick = (is: string) => {
+    // Consolidate all generator data into one array
+    const allGenerators = [
+      ...ResidentialGeneratorData,
+      ...CommercialGeneratorData,
+      ...IndustrialGeneratorData,
+    ];
+    // Find the generator in the consolidated data
+    const generator = allGenerators.find((item) => item.id === generatorId);
+    // Set the generator info
+    setGeneratorInfo(generator || null);
+    setShowInfo(true);
+  };
+
+
+  useEffect(() => {
+    console.log("Current generatorInfo:", generatorInfo);
+  }, [generatorInfo]);
+
+
+  const modelName: { [key: string]: string } = {
     // Residential Models
     '10kW/Model A': 'A1',
     '14kW/Model B': 'A2',
@@ -92,57 +114,33 @@ const GeneratorsScreen = () => {
     // Industrial Models
     'Industrial O': 'C1', // Custom
   };
-  
-  function getGeneratorData(modelName: string) {
-    const generatorId = modelMap[modelName];
-    if (!generatorId) {
-      console.log('No generator ID found for this model.');
-      return null;
-    }
-  
-    // Consolidate data from all sources
-    const allData = [...ResidentialGeneratorData, ...CommercialGeneratorData, ...IndustrialGeneratorData];
-  
-    // Find generator in the combined data
-    const generatorInfo = allData.find(generator => generator.id === generatorId);
-  
-    if (generatorInfo) {
-      return {
-        name: generatorInfo.name,
-        orderId: generatorInfo.orderId,
-        specifications: generatorInfo.specifications,
-      };
-    } else {
-      console.log('No generator data found for this model.');
-      return null;
-    }
-  }
-  
-  const handleInfoClick = (modelName: string) => {
-    const generatorData = getGeneratorData(modelName);
-    
-    if (generatorData) {
-      setGeneratorInfo(generatorData);
-      setShowInfo(true);
-    } else {
-      setGeneratorInfo(null);
-      setShowInfo(false);
-    }
-  };
-
-  // Add animated value for the scrolling text
-  const scrollAnim = useRef(new Animated.Value(0)).current;
 
   const addInstallationJob = () => {
+    // Ensure generatorInfo and its name are available
+    if (!generatorInfo || !generatorInfo.name) {
+      console.log('Generator info is not available or name is missing');
+    }
+  
     const newJob = {
       key: jobKey,
-      generatorInfo: '',
-      orderId: '',
-    };
+      generatorInfo: generatorId,
+      orderId: '12345',
+      model: generatorInfo?.name || 'Unknown Model', // Safely accessing name, fallback to 'Unknown Model' if not available
+  };
+  
     setInstallationJobs([...installationJobs, newJob]);
     setJobKey('');
     setModalVisible(false);
   };
+
+  const allGenerators = [
+    ...ResidentialGeneratorData,
+    ...CommercialGeneratorData,
+    ...IndustrialGeneratorData,
+  ];
+
+  // Add animated value for the scrolling text
+  const scrollAnim = useRef(new Animated.Value(0)).current;
 
   const handleOpenInstallationModal = () => {
     setShowInstallation(true);
@@ -211,28 +209,47 @@ const GeneratorsScreen = () => {
         <View style={styles.line} />
 
         {/* Render installation job buttons */}
-        {installationJobs.map((job, index) => (
-        <TouchableOpacity onPress={handleOpenInstallationModal}
-            key={index}
-            style={styles.jobButton}
-        >
-            <View style={styles.container}>
+        {installationJobs.map((newJob, index) => {
+          const generatorData = allGenerators.find(
+            (item) => item.id === newJob.generatorInfo,
+          );
+
+        return (
+            <TouchableOpacity
+              onPress={() => handleInfoClick(newJob.generatorInfo)}
+              key={index}
+              style={styles.jobButton}
+            >
+              <View style={styles.container}>
                 <View style={styles.headerContainer}>
-                    <Text style={styles.jobTitle}>Permits Received</Text>
+                  <Text style={styles.jobTitle}>
+                    {installationStages[currentStage]}
+                  </Text>
                 </View>
-            </View>
-            <Image
-              source={require('../assets/images/gen.png')}
-              style={styles.jobImage}
-            />
-            <View style={styles.jobTextContainer}>  
-              <Text style={styles.jobGeneratorInfo}>Generator: {job.generatorInfo}</Text>
-            </View>
-            <View style={styles.jobTextContainer}> 
-              <Text style={styles.jobOrderId}>Order ID: {job.orderId}</Text>
-            </View>
-        </TouchableOpacity>
-        ))}
+              </View>
+
+              {generatorData?.imagelink && (
+                <Image
+                  source={generatorData.imagelink}
+                  style={styles.jobImage}
+                  resizeMode="contain"
+                />
+              )}
+
+              <View style={styles.jobTextContainer}>
+                <Text style={styles.jobOrderId}>
+                  Model: {generatorData?.name || 'Unknown'}
+                </Text>
+              </View>
+
+              <View style={styles.jobTextContainer}>
+                <Text style={styles.jobOrderId}>
+                  Order ID: {newJob.orderId}
+                </Text>
+              </View>
+            </TouchableOpacity>
+          );
+        })}
 
         {/* Button to open the modal */}
         <TouchableOpacity
@@ -487,7 +504,7 @@ const GeneratorsScreen = () => {
       </ScrollView>
     </ImageBackground>
   );
-};
+}
 
 export default GeneratorsScreen;
 

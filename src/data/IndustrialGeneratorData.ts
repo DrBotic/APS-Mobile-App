@@ -33,6 +33,7 @@ export interface IndustrialGenerator {
         Whether you know you need 1000kW right out of the gate, or the power of a 49L engine, or you know your needs will grow over the years, Anderson Power Services and Generac Generators have the Custom Industrial Generator solutions you need. Contact for a custom quote, or a FREE consultation of your industrial power needs.
       `,
       imagelink: require('../assets/images/industrial-generator.png'),
+      specifications: [],
       type: 'Industrial',
       index: 0,
     },
