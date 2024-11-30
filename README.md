@@ -1,21 +1,21 @@
-# dependenices installed:
+# Introduction
+#  This repository contains the front-end for the APS mobile application, designed to track the installation process to allow transpanency for the client and business.
 
-# npm install @react-navigation/native
-# npm install react-native-screens react-native-safe-area-context
-# npm install @react-navigation/native-stack
-# npm install @react-navigation/bottom-tabs
-# npm install react-native-vector-icons
-# npm install --save react-native-vector-icons
-# npm i zustand
-# npm i immer
-# npm i @react-native-async-storage/async-storage
-# npm i --save-dev @type/react-native-vector-icons
-# npm i lottie-react-native
+# Dependencies
+#  
 
 
+# Getting Started
 
+# Prerequisities
+#  1. Java 17-20: Ensure Java 17-20 is installed on your local machine. Download here: "https://www.oracle.com/java/technologies/javase/jdk20-archive-downloads.html"
+#  2. 
 
-# Don't know if we need right now:
+# Setting Up the Database Connection
+#  1. 
 
-# npm install react-native-svg
-# npm install --save-dev react-native-svg-transformer
+# Installation
+#  1. Clone the repository git clone "https://github.com/IbrahimaDiallo32/Anderson-Power-Services-Mobile-App.git".
+#  2. Open the project in Visual Studio Code.
+#  3. Ensure Java 17-20 is selected as the project JDK for Visual Studio Code.
+#  4. Run front-end application by 'npx react-native start' or 'npm start'.
