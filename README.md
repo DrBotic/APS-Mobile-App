@@ -32,15 +32,6 @@ This repository contains the front-end code for the APS mobile application. The 
    ```plaintext
    API_BASE_URL=<your-backend-api-endpoint>
 
-### Installation
-1. Clone the repository `git clone https://github.com/IbrahimaDiallo32/Anderson-Power-Services-Mobile-App.git`.
-2. Navigate to the project directory: `cd Anderson-Power-Services-Mobile-App`.
-3. Open the project in Visual Studio Code.
-4. Ensure Java 17-20 is selected as the project JDK for Visual Studio Code.
-5. Install the project dependencies: `npm install`.
-6. Start the development server: `npx react-native start` or `npm start`.
-7. Run the app on a simulator or connected device: [Android] `npx react-native run-android` or [iOS] `npx react-native run-ios`.
-
 ### Setting up Android Studio 
 1. Download Android Studio [Android Studio Download](https://developer.android.com/studio).
 2. While on Android Studio installation wizard, make sure the boxes next to all of the following items are checked:
@@ -63,6 +54,15 @@ This repository contains the front-end code for the APS mobile application. The 
 10. Look for and expand the "Android SDK Build-Tools".
 11. Make sure that 35.0.0 is selected.
 12. Now click "Apply". 
+
+### Installation
+1. Clone the repository `git clone https://github.com/IbrahimaDiallo32/Anderson-Power-Services-Mobile-App.git`.
+2. Navigate to the project directory: `cd Anderson-Power-Services-Mobile-App`.
+3. Open the project in Visual Studio Code.
+4. Ensure Java 17-20 is selected as the project JDK for Visual Studio Code.
+5. Install the project dependencies: `npm install`.
+6. Start the development server: `npx react-native start` or `npm start`.
+7. Run the app on a simulator or connected device: [Android] `npx react-native run-android` or [iOS] `npx react-native run-ios`.
 
 ### Tips and tools
 1. Youtube Video to use as a reference to set up [React Native Environment Setup in Windows (10,11) 2024](https://youtu.be/4onhZMbF2NI?si=Bhz92ZT-X1lBmsKZ).
