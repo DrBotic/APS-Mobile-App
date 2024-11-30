@@ -42,7 +42,7 @@ This repository contains the front-end code for the APS mobile application. The 
 7. Run the app on a simulator or connected device: [Android] `npx react-native run-android` or [iOS] `npx react-native run-ios`.
 
 ### Tips and tools
-1. Youtube Video to use as a reference to set up `https://youtu.be/4onhZMbF2NI?si=Bhz92ZT-X1lBmsKZ`.
+1. Youtube Video to use as a reference to set up [React Native Environment Setup in Windows (10,11) 2024](https://youtu.be/4onhZMbF2NI?si=Bhz92ZT-X1lBmsKZ).
 2. If you are having issues, Try `npx react-native doctor`
 3. Make sure you have all the correct paths.
 4. If you still have issues, we recommend troubleshooting using Chat GPT and Stack Overflow.
