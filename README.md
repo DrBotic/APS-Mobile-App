@@ -41,6 +41,29 @@ This repository contains the front-end code for the APS mobile application. The 
 6. Start the development server: `npx react-native start` or `npm start`.
 7. Run the app on a simulator or connected device: [Android] `npx react-native run-android` or [iOS] `npx react-native run-ios`.
 
+### Setting up Android Studio 
+1. Download Android Studio [Android Studio Download](https://developer.android.com/studio).
+2. While on Android Studio installation wizard, make sure the boxes next to all of the following items are checked:
+
+   - Android SDK
+   - Android SDK Platform
+   - Android Virtual Device
+  
+3. Open android studio and click "More Actions". 
+4. Select "SDK Manager".
+5. Select the "SDK Platforms" tab
+6. Look for and expand the Android 15 (VanillaIceCream).
+7. Make sure the following is checked
+
+   - Android SDK Platform 35
+   - Intel x86 Atom_64 System Image or Google APIs Intel x86 Atom System Image or (for Apple M1 Silicon) Google APIs ARM 64 v8a System Image
+  
+8. Select the "SDK Tools" tab.
+9. Check the "Show Package Details" box.
+10. Look for and expand the "Android SDK Build-Tools".
+11. Make sure that 35.0.0 is selected.
+12. Now click "Apply". 
+
 ### Tips and tools
 1. Youtube Video to use as a reference to set up [React Native Environment Setup in Windows (10,11) 2024](https://youtu.be/4onhZMbF2NI?si=Bhz92ZT-X1lBmsKZ).
 2. If you are having issues, Try `npx react-native doctor`
