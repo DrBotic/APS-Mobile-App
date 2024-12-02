@@ -1,7 +1,6 @@
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import Dashboard from './src/screens/Dashboard';
 import Profile from './src/screens/Profile';
 import Setting from './src/screens/Setting';
 import TabNavigator from './src/navigators/TabNavigator';
@@ -23,60 +22,60 @@ const App = () => {
   return (
     <DarkModeProvider>
       <NavigationContainer>
-      <Stack.Navigator initialRouteName="Login">
-        <Stack.Screen
-          name="Login"
-          component={Login}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="HomeScreen"
-          component={Home} //will be changed later
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="ForgotPasswordScreen"
-          component={ForgotPassword}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="SignUpScreen"
-          component={SignUp}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="Notifications"
-          component={Notifications}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="Profile"
-          component={Profile}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="Faq"
-          component={Faq}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="Service_Request"
-          component={Service_Request}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="About_Us"
-          component={About_Us}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="Edit_Profile"
-          component={Edit_Profile}
-          options={{ headerShown: false }}
-        />
-      </Stack.Navigator>
-    </NavigationContainer>
-  </DarkModeProvider>
+        <Stack.Navigator initialRouteName="Login">
+          <Stack.Screen
+            name="Login"
+            component={Login}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="HomeScreen"
+            component={Home} //will be changed later
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="ForgotPasswordScreen"
+            component={ForgotPassword}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="SignUpScreen"
+            component={SignUp}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="Notifications"
+            component={Notifications}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="Profile"
+            component={Profile}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="Faq"
+            component={Faq}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="Service_Request"
+            component={Service_Request}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="About_Us"
+            component={About_Us}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="Edit_Profile"
+            component={Edit_Profile}
+            options={{ headerShown: false }}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </DarkModeProvider>
   );
 };
 

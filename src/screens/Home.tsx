@@ -14,8 +14,10 @@ import {
   SafeAreaView,
   Dimensions,
   FlatList,
+  Alert,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Color, Spacing, BorderRadius, FontSize, FontFamily } from '../theme/themes.ts';
 import { ResidentialGeneratorData } from '../data/ResidentialGeneratorData.ts';
 import { CommercialGeneratorData } from '../data/CommercialGeneratorData.ts';
@@ -26,12 +28,19 @@ import type { IndustrialGenerator } from '../data/IndustrialGeneratorData.ts';
 import MarqueeText from './MarqueeText.tsx';
 import { useDarkMode } from '../components/DarkModeContext.tsx';
 
-const {width} = Dimensions.get('screen');
+const { width } = Dimensions.get('screen');
 
 const GeneratorsScreen = () => {
   const navigation = useNavigation();
   const [modalVisible, setModalVisible] = useState(false);
+  const [generatorData, setGeneratorData] = useState(null);
+  const [newJob, setNewJob] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [jobData, setJobData] = useState(null);
   const [jobKey, setJobKey] = useState('');
+  const [specKey, setSpecKey] = useState('A1');
+  const [salesRep, setSalesRep] = useState('A1');
+  const [installRep, setInstallRep] = useState('');
   const [installationJobs, setInstallationJobs] = useState([]);
   const [showInfo, setShowInfo] = useState(false);
   const [showInstallation, setShowInstallation] = useState(false);
@@ -77,6 +86,13 @@ const GeneratorsScreen = () => {
   const currentStage = 0; // Example of current stage
 
   const generatorId = 'C1'; // Example of current generator model
+  const picture = '../users'
+
+  // Function to get the mapped value
+  function getMappedValue(inputModel: string): string | undefined {
+    const mappedValue = modelName[inputModel];
+    return mappedValue ? mappedValue : 'Model not found';
+  }
 
   const handleInfoClick = (is: string) => {
     // Consolidate all generator data into one array
@@ -86,7 +102,10 @@ const GeneratorsScreen = () => {
       ...IndustrialGeneratorData,
     ];
     // Find the generator in the consolidated data
-    const generator = allGenerators.find((item) => item.id === generatorId);
+    const key = getMappedValue(specKey);
+    console.log("this is theee" + specKey);
+    console.log("this is the alleged key " + key);
+    const generator = allGenerators.find((item) => item.id === key);
     // Set the generator info
     setGeneratorInfo(generator || null);
     setShowInfo(true);
@@ -106,8 +125,8 @@ const GeneratorsScreen = () => {
     '22kW/Model D': 'A4',
     '7.5kW/Model E': 'A5',
     '24kW/Model F': 'A6',
-    '30kW/Model G': 'A7',
-  
+    '40kW/Model G': 'A7',
+
     // Commercial Models
     '25kW/Model H': 'B1',
     '30kW/Model I': 'B2',
@@ -116,7 +135,7 @@ const GeneratorsScreen = () => {
     '80kW/Model L': 'B5',
     '30kW/Model M': 'B6', // Diesel Series
     '50kW/Model N': 'B7', // Diesel Series
-  
+
     // Industrial Models
     'Industrial O': 'C1', // Custom
   };
@@ -126,13 +145,13 @@ const GeneratorsScreen = () => {
     if (!generatorInfo || !generatorInfo.name) {
       console.log('Generator info is not available or name is missing');
     }
-  
+
     const newJob = {
       key: jobKey,
-      generatorInfo: generatorId,
+      generatorInfo: getMappedValue(jobData.gen_size_model),
       orderId: '12345',
       model: generatorInfo?.name || 'Unknown Model', // Safely accessing name, fallback to 'Unknown Model' if not available
-  };
+    };
     setInstallationJobs([...installationJobs, newJob]);
     setJobKey('');
     setModalVisible(false);
@@ -189,744 +208,819 @@ const GeneratorsScreen = () => {
   return (
     isDarkMode ? (
       <View style={[styles.background, { backgroundColor: '#202020' }]}>
-      <View style={styles.logoContainer}>
-      <TouchableOpacity onPress={toggleMenu} style={styles.menuIcon}>
-        <Image 
-          source={require('../assets/images/Menu.png')}
-          style={styles.menuIcon}
-          resizeMode="contain"
-        />
-      </TouchableOpacity>
-
-        <Image
-          source={require('../assets/images/anderson-power-logo.png')}
-          style={styles.logo}
-          resizeMode="contain"
-        />
-      </View>
-
-      <ScrollView contentContainerStyle={styles.contentContainer}>
-        <Text style={styles.title}>My Generators</Text>
-        <View style={styles.line} />
-
-        {/* Render installation job buttons */}
-        {installationJobs.map((newJob, index) => {
-          const generatorData = allGenerators.find(
-            (item) => item.id === newJob.generatorInfo,
-          );
-
-        return (
-          <TouchableOpacity onPress={handleOpenInstallationModal}
-            key={index}
-            style={styles.jobButton}
-        >
-            <View style={styles.container}>
-              <View style={styles.headerContainer}>
-                <Text style={styles.jobTitle}>
-                  {installationStages[currentStage]}
-                </Text>
-              </View>
-            </View>
-
-            {generatorData?.imagelink && (
-              <Image
-                source={generatorData.imagelink}
-                style={styles.jobImage}
-                resizeMode="contain"
-              />
-            )}
-
-            <View style={styles.jobTextContainer}>
-              <Text style={styles.jobOrderId}>
-                Model: {generatorData?.name || 'Unknown'}
-              </Text>
-            </View>
-
-            <View style={styles.jobTextContainer}>
-              <Text style={styles.jobOrderId}>
-                Order ID: {newJob.orderId}
-              </Text>
-            </View>
+        <View style={styles.logoContainer}>
+          <TouchableOpacity onPress={toggleMenu} style={styles.menuIcon}>
+            <Image
+              source={require('../assets/images/Menu.png')}
+              style={styles.menuIcon}
+              resizeMode="contain"
+            />
           </TouchableOpacity>
-        );
-        })}
 
-        {/* Button to open the modal */}
-        <TouchableOpacity
-          style={styles.addButton}
-          onPress={() => setModalVisible(true)}
-        >
-          <Text style={styles.addButtonText}>Add Installation Job{'\n'}+</Text>
-        </TouchableOpacity>
+          <Image
+            source={require('../assets/images/anderson-power-logo.png')}
+            style={styles.logo}
+            resizeMode="contain"
+          />
+        </View>
 
-        {/* Show Generator Installation Progress Modal */}
-        <Modal
+        <ScrollView contentContainerStyle={styles.contentContainer}>
+          <Text style={styles.title}>My Generators</Text>
+          <View style={styles.line} />
+
+          {/* Render installation job buttons */}
+          {jobData && jobData.map((newJob, index) => {
+            const { job, installRep, salesRep, generatorData } = newJob; // Destructure for readability
+
+
+            return (
+              <TouchableOpacity
+                onPress={handleOpenInstallationModal}
+                key={index}
+                style={styles.jobButton}
+              >
+                <View style={styles.container}>
+                  <View style={styles.headerContainer}>
+                    <Text style={styles.jobTitle}>
+                      {job.install_status || "No Status"}
+                    </Text>
+                  </View>
+                </View>
+
+                {generatorData?.imagelink && (
+                  <Image
+                    source='../'
+                    style={styles.jobImage}
+                    resizeMode="contain"
+                  />
+                )}
+
+
+                <View style={styles.jobTextContainer}>
+                  <Text style={styles.jobOrderId}>
+                    Model: {job.gen_size_model || "Unknown"}
+                  </Text>
+                </View>
+
+                <View style={styles.jobTextContainer}>
+                  <Text style={styles.jobOrderId}>
+                    Order ID: {job.id || "No Order ID"}
+                  </Text>
+                </View>
+
+                <View style={styles.jobTextContainer}>
+                  <Text style={styles.jobOrderId}>
+                    Customer Note: {job.customer_note || "No Notes"}
+                  </Text>
+                </View>
+
+                <View style={styles.jobTextContainer}>
+                  <Text style={styles.jobOrderId}>
+                    Installer: {installRep.first_name} {installRep.last_name} ({installRep.phonenumber})
+                  </Text>
+                </View>
+
+                <View style={styles.jobTextContainer}>
+                  <Text style={styles.jobOrderId}>
+                    Sales Rep: {salesRep.first_name} {salesRep.last_name} ({salesRep.phonenumber})
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            );
+          })}
+
+          {/* Button to open the modal */}
+          <TouchableOpacity
+            style={styles.addButton}
+            onPress={() => setModalVisible(true)}
+          >
+            <Text style={styles.addButtonText}>Add Installation Job{'\n'}+</Text>
+          </TouchableOpacity>
+
+          {/* Show Generator Installation Progress Modal */}
+          <Modal
             transparent={true}
             visible={showInstallation}
             animationType="fade"
             onRequestClose={handleCloseInstallationModal}
-        >
+          >
             <TouchableWithoutFeedback onPress={handleCloseInstallationModal}>
-            <View style={styles.modalBackground}>
+              <View style={styles.modalBackground}>
                 <TouchableWithoutFeedback>
-                <View style={styles.modalContainer}>
+                  <View style={styles.modalContainer}>
 
                     {/* Close Button */}
                     <TouchableOpacity style={styles.closeButton} onPress={handleCloseInstallationModal}>
-                    <Text style={styles.closeButtonText}>X</Text>
+                      <Text style={styles.closeButtonText}>X</Text>
                     </TouchableOpacity>
 
                     <Text style={styles.modalTitle}>Installation Progress</Text>
                     <ScrollView style={styles.stagesContainer}>
-                    {installationStages.map((stage, index) => (
+                      {installationStages.map((stage, index) => (
                         <View key={index} style={styles.stageRow}>
-                        {/* Stage Circle */}
-                        <View style={[
+                          {/* Stage Circle */}
+                          <View style={[
                             styles.circle,
                             index === currentStage
-                            ? styles.currentStageCircle
-                            : index < currentStage
-                            ? styles.completedStageCircle
-                            : styles.upcomingStageCircle
-                        ]}>
+                              ? styles.currentStageCircle
+                              : index < currentStage
+                                ? styles.completedStageCircle
+                                : styles.upcomingStageCircle
+                          ]}>
                             {index < currentStage && (
-                            <Text style={styles.checkMark}>✔</Text> // Check mark for completed stages
+                              <Text style={styles.checkMark}>✔</Text> // Check mark for completed stages
                             )}
-                        </View>
+                          </View>
 
-                        {/* Stage Text */}
-                        <Text style={[
+                          {/* Stage Text */}
+                          <Text style={[
                             styles.stageText,
                             index === currentStage
-                            ? styles.currentStageText
-                            : index < currentStage
-                            ? styles.completedStageText
-                            : styles.upcomingStageText
-                        ]}>
+                              ? styles.currentStageText
+                              : index < currentStage
+                                ? styles.completedStageText
+                                : styles.upcomingStageText
+                          ]}>
                             {stage}
-                        </Text>
+                          </Text>
                         </View>
-                    ))}
+                      ))}
                     </ScrollView>
-                    <TouchableOpacity 
-                        onPress={handleInfoClick}
-                        style={[styles.helpContainer, { flexDirection: 'row', alignItems: 'center' }]}
+                    <TouchableOpacity
+                      onPress={handleInfoClick}
+                      style={[styles.helpContainer, { flexDirection: 'row', alignItems: 'center' }]}
                     >
-                        <Image 
-                            source={require('../assets/images/info.png')}
-                            style={styles.infoIcon}
-                            resizeMode="contain"
-                        />
-                        <Text style={styles.modalTitle}> Generator info</Text>
+                      <Image
+                        source={require('../assets/images/info.png')}
+                        style={styles.infoIcon}
+                        resizeMode="contain"
+                      />
+                      <Text style={styles.modalTitle}> Generator info</Text>
                     </TouchableOpacity>
-                </View>
+                  </View>
                 </TouchableWithoutFeedback>
-            </View>
+              </View>
             </TouchableWithoutFeedback>
-        </Modal>
+          </Modal>
 
 
-        {/* Modal for entering the job key */}
-        <Modal
-          animationType="fade"
-          transparent={true}
-          visible={modalVisible}
-          onRequestClose={() => setModalVisible(false)}
-        >
-          <View style={styles.modalOverlay}>
-            <View style={styles.modalContainer}>
-              <Text style={styles.modalTitle}>Enter Installation Job Key</Text>
+          {/* Modal for entering the job key */}
+          {/* Modal for entering the job key */}
+          <Modal
+            animationType="fade"
+            transparent={true}
+            visible={modalVisible}
+            onRequestClose={() => setModalVisible(false)}
+          >
+            <View style={styles.modalOverlay}>
+              <View style={styles.modalContainer}>
+                <Text style={styles.modalTitle}>Enter Installation Job Key</Text>
 
-              <TextInput
-                style={styles.input}
-                placeholder="Generator key"
-                placeholderTextColor="#FFFFFF"
-                value={jobKey}
-                onChangeText={setJobKey}
-              />
+                <TextInput
+                  style={styles.input}
+                  placeholder="Generator key"
+                  placeholderTextColor="#FFFFFF"
+                  value={jobKey}
+                  onChangeText={setJobKey}
+                />
 
-              <View style={styles.modalButtons}>
-                <TouchableOpacity
-                  style={styles.modalButton}
-                  onPress={() => setModalVisible(false)}
-                >
-                  <Text style={styles.modalButtonText}>Cancel</Text>
-                </TouchableOpacity>
+                <View style={styles.modalButtons}>
+                  {/* Cancel Button */}
+                  <TouchableOpacity
+                    style={styles.modalButton}
+                    onPress={() => setModalVisible(false)}
+                  >
+                    <Text style={styles.modalButtonText}>Cancel</Text>
+                  </TouchableOpacity>
 
-                <TouchableOpacity
-                  style={styles.modalButton}
-                  onPress={addInstallationJob}
-                >
-                  <Text style={styles.modalButtonText}>OK</Text>
-                </TouchableOpacity>
+                  {/* OK Button */}
+                  <TouchableOpacity
+                    style={styles.modalButton}
+                    onPress={async () => {
+                      try {
+                        // Validation logic
+                        if (!jobKey.trim()) {
+                          Alert.alert('Error', 'Please enter a valid Generator key.');
+                          return;
+                        }
+
+                        // Retrieve token
+                        const token = await AsyncStorage.getItem('authToken');
+                        if (!token) {
+                          Alert.alert('Error', 'You are not logged in.');
+                          return;
+                        }
+
+                        // Fetch job data
+                        const apiUrl = `http://10.96.33.238:8080/api/v1/job/get-user-jobs?generatorId=${jobKey}`;
+                        const response = await fetch(apiUrl, {
+                          method: 'GET',
+                          headers: {
+                            Authorization: `Bearer ${token}`,
+                            'Content-Type': 'application/json',
+                          },
+                        });
+
+                        if (!response.ok) {
+                          throw new Error(`Failed to fetch installation jobs. Status: ${response.status}`);
+                        }
+
+                        const data = await response.json();
+                        // setGeneratorInfo(data);
+                        // setGeneratorData(data);
+                        // Match the job by generator ID
+                        const matchedJob = data.find(
+                          (jobObj) => jobObj.job.id.trim().toLowerCase() === jobKey.trim().toLowerCase()
+                        );
+
+                        if (!matchedJob) {
+                          Alert.alert('Error', 'No matching job found for the entered generator key.');
+                          return;
+                        }
+                        setJobData(data);
+                        console.log("hey you " + data.map((item) => item.job.gen_size_model))
+                        setSpecKey(data.map((item) => item.job.gen_size_model));
+
+                        // Update states for routing
+                        setInstallationJobs((prevJobs) => [...prevJobs, matchedJob.job]); // Add to the job list
+                        setModalVisible(false); // Close the modal
+                      } catch (error) {
+                        console.error('Error during job validation:', error);
+                        Alert.alert('Error', error.message);
+                      }
+                    }}
+                  >
+                    <Text style={styles.modalButtonText}>OK</Text>
+                  </TouchableOpacity>
+                </View>
               </View>
             </View>
-          </View>
-        </Modal>
+          </Modal>
 
-        {/* Animated Side Menu */}
-        <Animated.View style={[styles.menuContainer, { transform: [{ translateX: slideAnim }] }]}>
-          {/* Logo Icon */}
-          <View style={styles.logoContainer}>
-            <Image
-              source={require('../assets/images/Arrow_logo.png')}
-              style={styles.Menu_Logo}
-              resizeMode="contain"
+          {/* Animated Side Menu */}
+          <Animated.View style={[styles.menuContainer, { transform: [{ translateX: slideAnim }] }]}>
+            {/* Logo Icon */}
+            <View style={styles.logoContainer}>
+              <Image
+                source={require('../assets/images/Arrow_logo.png')}
+                style={styles.Menu_Logo}
+                resizeMode="contain"
               />
-          </View>
+            </View>
 
-          {/* Menu Items */}
-          <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('HomeScreen')}>
-            <Image
-            source={require('../assets/images/Home_DM.png')}
-            style={styles.adLogo}
-            resizeMode="contain"
-            />
-            <Text style={styles.menuText}>Home</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Profile')}>
-            <Image
-              source={require('../assets/images/Profile_DM.png')}
-              style={styles.adLogo}
-              resizeMode="contain"
+            {/* Menu Items */}
+            <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('HomeScreen')}>
+              <Image
+                source={require('../assets/images/Home_DM.png')}
+                style={styles.adLogo}
+                resizeMode="contain"
               />
-            <Text style={styles.menuText}>Profile</Text>
-          </TouchableOpacity>
+              <Text style={styles.menuText}>Home</Text>
+            </TouchableOpacity>
 
-          <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Notifications')}>
-            <Image
-              source={require('../assets/images/Bell_DM.png')}
-              style={styles.adLogo}
-              resizeMode="contain"
+            <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Profile')}>
+              <Image
+                source={require('../assets/images/Profile_DM.png')}
+                style={styles.adLogo}
+                resizeMode="contain"
               />
-            <Text style={styles.menuText}>Notifications</Text>
-          </TouchableOpacity>
+              <Text style={styles.menuText}>Profile</Text>
+            </TouchableOpacity>
 
-          <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Service_Request')}>
-            <Image
-              source={require('../assets/images/Tool_DM.png')}
-              style={styles.adLogo}
-              resizeMode="contain"
+            <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Notifications')}>
+              <Image
+                source={require('../assets/images/Bell_DM.png')}
+                style={styles.adLogo}
+                resizeMode="contain"
               />
-            <Text style={styles.menuText}>Service Request</Text>
-          </TouchableOpacity>
+              <Text style={styles.menuText}>Notifications</Text>
+            </TouchableOpacity>
 
-          <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Faq')}>
-            <Image
-              source={require('../assets/images/FAQ_DM.png')}
-              style={styles.adLogo}
-              resizeMode="contain"
+            <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Service_Request')}>
+              <Image
+                source={require('../assets/images/Tool_DM.png')}
+                style={styles.adLogo}
+                resizeMode="contain"
               />
-            <Text style={styles.menuText}>FAQ</Text>
-          </TouchableOpacity>
+              <Text style={styles.menuText}>Service Request</Text>
+            </TouchableOpacity>
 
-          <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('About_Us')}>
-            <Image
-              source={require('../assets/images/About_DM.png')}
-              style={styles.adLogo}
-              resizeMode="contain"
+            <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Faq')}>
+              <Image
+                source={require('../assets/images/FAQ_DM.png')}
+                style={styles.adLogo}
+                resizeMode="contain"
               />
-            <Text style={styles.menuText}>About Us</Text>
-          </TouchableOpacity>
+              <Text style={styles.menuText}>FAQ</Text>
+            </TouchableOpacity>
 
-          <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Login')}>
-            <Image
-              source={require('../assets/images/Logout_DM.png')}
-              style={styles.adLogo}
-              resizeMode="contain"
+            <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('About_Us')}>
+              <Image
+                source={require('../assets/images/About_DM.png')}
+                style={styles.adLogo}
+                resizeMode="contain"
               />
-            <Text style={styles.menuText}>Logout</Text>
-          </TouchableOpacity>
-        </Animated.View>
+              <Text style={styles.menuText}>About Us</Text>
+            </TouchableOpacity>
 
-        {/* Show Generator Information Modal */}
-        <Modal
-              transparent={true}
-              visible={showInfo}
-              animationType="fade"
-              onRequestClose={handleCloseInfo} 
-            >
-                <View style={styles.modalBackground}>
-                  <View style={styles.infoContainer}>
-                    <TouchableOpacity style={styles.closeButton} onPress={handleCloseInfo}>
-                      <Text style={styles.closeButtonText}>X</Text>
-                    </TouchableOpacity>
-                    {generatorInfo && (
-                      <>
-                        <Text style={styles.infoTitle}>{generatorInfo.name}</Text>
-                        {generatorInfo.description && (
+            <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Login')}>
+              <Image
+                source={require('../assets/images/Logout_DM.png')}
+                style={styles.adLogo}
+                resizeMode="contain"
+              />
+              <Text style={styles.menuText}>Logout</Text>
+            </TouchableOpacity>
+          </Animated.View>
+
+          {/* Show Generator Information Modal */}
+          {/* Show Generator Information Modal */}
+          <Modal
+            transparent={true}
+            visible={showInfo}
+            animationType="fade"
+            onRequestClose={handleCloseInfo}
+          >
+            <View style={styles.modalBackground}>
+              <View style={styles.infoContainer}>
+                <TouchableOpacity style={styles.closeButton} onPress={handleCloseInfo}>
+                  <Text style={styles.closeButtonText}>X</Text>
+                </TouchableOpacity>
+                {/* Wrap modal content in a ScrollView */}
+                <ScrollView
+                  contentContainerStyle={styles.scrollViewContent}
+                  nestedScrollEnabled={true}
+                >
+                  {generatorInfo && (
+                    <>
+                      <Text style={styles.infoTitle}>{generatorInfo.name}</Text>
+                      {generatorInfo.description && (
+                        <>
+                          <Text style={styles.infoDescription}>Description:</Text>
+                          <Text style={styles.specificationBullet}>{generatorInfo.description}</Text>
+                        </>
+                      )}
+                      <Text style={styles.infoSpecifications}>Specifications:</Text>
+                      {/* Specifications List */}
+                      <View style={styles.specificationsList}>
+                        {generatorInfo.specifications[0] && (
                           <>
-                            <Text style={styles.infoDescription}>Description:</Text>
-                            <Text style={styles.specificationBullet}>{generatorInfo.description}</Text>
+                            {generatorInfo.specifications[0].model && (
+                              <Text style={styles.specificationBullet}>
+                                • Model: {generatorInfo.specifications[0].model}
+                              </Text>
+                            )}
+                            {generatorInfo.specifications[0].series && (
+                              <Text style={styles.specificationBullet}>
+                                • Series: {generatorInfo.specifications[0].series}
+                              </Text>
+                            )}
+                            {generatorInfo.specifications[0].fuelType && (
+                              <Text style={styles.specificationBullet}>
+                                • Fuel Type: {generatorInfo.specifications[0].fuelType}
+                              </Text>
+                            )}
+                            {generatorInfo.specifications[0].AutomaticTSA_Rating && (
+                              <Text style={styles.specificationBullet}>
+                                • Automatic TSA Rating: {generatorInfo.specifications[0].AutomaticTSA_Rating}
+                              </Text>
+                            )}
+                            {/* Other specification fields */}
                           </>
                         )}
-                        <Text style={styles.infoSpecifications}>Specifications:</Text>
-                        {/* Wrap specifications in a ScrollView */}
-                        <ScrollView style={styles.specificationsList} nestedScrollEnabled={true}>
-                          {/* Conditional Rendering of Specifications */}
-                          {generatorInfo.specifications[0] && (
-                            <>
-                              {generatorInfo.specifications[0].model && (
-                                <Text style={styles.specificationBullet}>
-                                  • Model: {generatorInfo.specifications[0].model}
-                                </Text>
-                              )}
-                              {generatorInfo.specifications[0].series && (
-                                <Text style={styles.specificationBullet}>
-                                  • Series: {generatorInfo.specifications[0].series}
-                                </Text>
-                              )}
-                              {generatorInfo.specifications[0].fuelType && (
-                                <Text style={styles.specificationBullet}>
-                                  • Fuel Type: {generatorInfo.specifications[0].fuelType}
-                                </Text>
-                              )}
-                              {generatorInfo.specifications[0].AutomaticTSA_Rating && (
-                                <Text style={styles.specificationBullet}>
-                                  • Automatic TSA Rating: {generatorInfo.specifications[0].AutomaticTSA_Rating}
-                                </Text>
-                              )}
-                              {generatorInfo.specifications[0].Circuits && (
-                                <Text style={styles.specificationBullet}>
-                                  • Circuits: {generatorInfo.specifications[0].Circuits}
-                                </Text>
-                              )}
-                              {generatorInfo.specifications[0].engine_size && (
-                                <Text style={styles.specificationBullet}>
-                                  • Engine Size: {generatorInfo.specifications[0].engine_size}
-                                </Text>
-                              )}
-                              {generatorInfo.specifications[0].minAmps_240V && (
-                                <Text style={styles.specificationBullet}>
-                                  • Min Amps 240V: {generatorInfo.specifications[0].minAmps_240V}
-                                </Text>
-                              )}
-                              {generatorInfo.specifications[0].minPowerRating && (
-                                <Text style={styles.specificationBullet}>
-                                  • Min Power Rating: {generatorInfo.specifications[0].minPowerRating}
-                                </Text>
-                              )}
-                              {generatorInfo.specifications[0].warrantyLength && (
-                                <Text style={styles.specificationBullet}>
-                                  • Warranty Length: {generatorInfo.specifications[0].warrantyLength}
-                                </Text>
-                              )}
-                              {generatorInfo.specifications[0].NG_BTUS && (
-                                <Text style={styles.specificationBullet}>
-                                  • NG BTUs: {generatorInfo.specifications[0].NG_BTUS}
-                                </Text>
-                              )}
-                              {generatorInfo.specifications[0].LP_BTUS && (
-                                <Text style={styles.specificationBullet}>
-                                  • LP BTUs: {generatorInfo.specifications[0].LP_BTUS}
-                                </Text>
-                              )}
-                              {generatorInfo.specifications[0].sku && (
-                                <Text style={styles.specificationBullet}>
-                                  • SKU: {generatorInfo.specifications[0].sku}
-                                </Text>
-                              )}
-                              {generatorInfo.specifications[0].weight && (
-                                <Text style={styles.specificationBullet}>
-                                  • Weight: {generatorInfo.specifications[0].weight}
-                                </Text>
-                              )}
-                            </>
-                          )}
-                        
-                        <View style={styles.representativeContainer}>
-                          <Text style={styles.representativeTitle}>Representatives:</Text>
-                          <Text style={styles.representativeText}>Sales: {salesRepresentative}</Text>
-                          <Text style={styles.representativeText}>Installation: {installationRepresentative}</Text>
-                        </View>
-                        </ScrollView>
-                      </>
-                    )}
-                  </View>
-                </View>
-            </Modal>
+                      </View>
+                      {/* Representatives Section */}
+                      {/* <View style={styles.representativeContainer}>
+                        <Text style={styles.representativeTitle}>Representatives:</Text>
+                        <Text style={styles.representativeText}>Sales: {salesRepresentative}</Text>
+                        <Text style={styles.representativeText}>Installation: {installationRepresentative}</Text>
+                      </View> */}
+                    </>
+                  )}
+                </ScrollView>
+              </View>
+            </View>
+          </Modal>
 
-        {/* Ad Section with scrolling text */}
-        <View style={styles.adContainer}>
-          <Animated.View style={[animatedStyle, styles.scrollingTextContainer]}>
-            <MarqueeText text="This is a scrolling marquee text in React Native!" />
-          </Animated.View>
-        </View>
-      </ScrollView>
+
+          {/* Ad Section with scrolling text */}
+          <View style={styles.adContainer}>
+            <Animated.View style={[animatedStyle, styles.scrollingTextContainer]}>
+              <MarqueeText text="This is a scrolling marquee text in React Native!" />
+            </Animated.View>
+          </View>
+        </ScrollView>
       </View>
     ) : (
-    <ImageBackground
-      source={require('../assets/images/map.png')}
-      resizeMode="cover"
-      blurRadius={5}
-      style={styles.background}
-    >
-      <View style={styles.logoContainer}>
-      <TouchableOpacity onPress={toggleMenu} style={styles.menuIcon}>
-        <Image 
-          source={require('../assets/images/Menu.png')}
-          style={styles.menuIcon}
-          resizeMode="contain"
-        />
-      </TouchableOpacity>
-
-        <Image
-          source={require('../assets/images/anderson-power-logo.png')}
-          style={styles.logo}
-          resizeMode="contain"
-        />
-      </View>
-
-      <ScrollView contentContainerStyle={styles.contentContainer}>
-        <Text style={styles.title}>My Generators</Text>
-        <View style={styles.line} />
-
-        {/* Render installation job buttons */}
-        {installationJobs.map((newJob, index) => {
-          const generatorData = allGenerators.find(
-            (item) => item.id === newJob.generatorInfo,
-          );
-
-        return (
-          <TouchableOpacity onPress={handleOpenInstallationModal}
-            key={index}
-            style={styles.jobButton}
-        >
-            <View style={styles.container}>
-              <View style={styles.headerContainer}>
-                <Text style={styles.jobTitle}>
-                  {installationStages[currentStage]}
-                </Text>
-              </View>
-            </View>
-
-            {generatorData?.imagelink && (
-              <Image
-                source={generatorData.imagelink}
-                style={styles.jobImage}
-                resizeMode="contain"
-              />
-            )}
-
-            <View style={styles.jobTextContainer}>
-              <Text style={styles.jobOrderId}>
-                Model: {generatorData?.name || 'Unknown'}
-              </Text>
-            </View>
-
-            <View style={styles.jobTextContainer}>
-              <Text style={styles.jobOrderId}>
-                Order ID: {newJob.orderId}
-              </Text>
-            </View>
+      <ImageBackground
+        source={require('../assets/images/map.png')}
+        resizeMode="cover"
+        blurRadius={5}
+        style={styles.background}
+      >
+        <View style={styles.logoContainer}>
+          <TouchableOpacity onPress={toggleMenu} style={styles.menuIcon}>
+            <Image
+              source={require('../assets/images/Menu.png')}
+              style={styles.menuIcon}
+              resizeMode="contain"
+            />
           </TouchableOpacity>
-        );
-        })}
 
-        {/* Button to open the modal */}
-        <TouchableOpacity
-          style={styles.addButton}
-          onPress={() => setModalVisible(true)}
-        >
-          <Text style={styles.addButtonText}>Add Installation Job{'\n'}+</Text>
-        </TouchableOpacity>
+          <Image
+            source={require('../assets/images/anderson-power-logo.png')}
+            style={styles.logo}
+            resizeMode="contain"
+          />
+        </View>
 
-        {/* Show Generator Installation Progress Modal */}
-        <Modal
+        <ScrollView contentContainerStyle={styles.contentContainer}>
+          <Text style={styles.title}>My Generators</Text>
+          <View style={styles.line} />
+
+          {jobData && jobData.map((newJob, index) => {
+            const { job, installRep, salesRep, generatorData } = newJob; // Destructure for readability
+
+
+            return (
+              <TouchableOpacity
+                onPress={handleOpenInstallationModal}
+                key={index}
+                style={styles.jobButton}
+              >
+                <View style={styles.container}>
+                  <View style={styles.headerContainer}>
+                    <Text style={styles.jobTitle}>
+                      {job.install_status || "No Status"}
+                    </Text>
+                  </View>
+                </View>
+
+                {generatorData?.imagelink && (
+                  <Image
+                    source='../'
+                    style={styles.jobImage}
+                    resizeMode="contain"
+                  />
+                )}
+
+
+                <View style={styles.jobTextContainer}>
+                  <Text style={styles.jobOrderId}>
+                    Model: {job.gen_size_model || "Unknown"}
+                  </Text>
+                </View>
+
+                <View style={styles.jobTextContainer}>
+                  <Text style={styles.jobOrderId}>
+                    Order ID: {job.id || "No Order ID"}
+                  </Text>
+                </View>
+
+                <View style={styles.jobTextContainer}>
+                  <Text style={styles.jobOrderId}>
+                    Customer Note: {job.customer_note || "No Notes"}
+                  </Text>
+                </View>
+
+                <View style={styles.jobTextContainer}>
+                  <Text style={styles.jobOrderId}>
+                    Installer: {installRep.first_name} {installRep.last_name} ({installRep.phonenumber})
+                  </Text>
+                </View>
+
+                <View style={styles.jobTextContainer}>
+                  <Text style={styles.jobOrderId}>
+                    Sales Rep: {salesRep.first_name} {salesRep.last_name} ({salesRep.phonenumber})
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            );
+          })}
+
+
+          {/* Button to open the modal */}
+          <TouchableOpacity
+            style={styles.addButton}
+            onPress={() => setModalVisible(true)}
+          >
+            <Text style={styles.addButtonText}>Add Installation Job{'\n'}+</Text>
+          </TouchableOpacity>
+
+          {/* Show Generator Installation Progress Modal */}
+          <Modal
             transparent={true}
             visible={showInstallation}
             animationType="fade"
             onRequestClose={handleCloseInstallationModal}
-        >
+          >
             <TouchableWithoutFeedback onPress={handleCloseInstallationModal}>
-            <View style={styles.modalBackground}>
+              <View style={styles.modalBackground}>
                 <TouchableWithoutFeedback>
-                <View style={styles.modalContainer}>
+                  <View style={styles.modalContainer}>
 
                     {/* Close Button */}
                     <TouchableOpacity style={styles.closeButton} onPress={handleCloseInstallationModal}>
-                    <Text style={styles.closeButtonText}>X</Text>
+                      <Text style={styles.closeButtonText}>X</Text>
                     </TouchableOpacity>
 
                     <Text style={styles.modalTitle}>Installation Progress</Text>
                     <ScrollView style={styles.stagesContainer}>
-                    {installationStages.map((stage, index) => (
+                      {installationStages.map((stage, index) => (
                         <View key={index} style={styles.stageRow}>
-                        {/* Stage Circle */}
-                        <View style={[
+                          {/* Stage Circle */}
+                          <View style={[
                             styles.circle,
                             index === currentStage
-                            ? styles.currentStageCircle
-                            : index < currentStage
-                            ? styles.completedStageCircle
-                            : styles.upcomingStageCircle
-                        ]}>
+                              ? styles.currentStageCircle
+                              : index < currentStage
+                                ? styles.completedStageCircle
+                                : styles.upcomingStageCircle
+                          ]}>
                             {index < currentStage && (
-                            <Text style={styles.checkMark}>✔</Text> // Check mark for completed stages
+                              <Text style={styles.checkMark}>✔</Text> // Check mark for completed stages
                             )}
-                        </View>
+                          </View>
 
-                        {/* Stage Text */}
-                        <Text style={[
+                          {/* Stage Text */}
+                          <Text style={[
                             styles.stageText,
                             index === currentStage
-                            ? styles.currentStageText
-                            : index < currentStage
-                            ? styles.completedStageText
-                            : styles.upcomingStageText
-                        ]}>
+                              ? styles.currentStageText
+                              : index < currentStage
+                                ? styles.completedStageText
+                                : styles.upcomingStageText
+                          ]}>
                             {stage}
-                        </Text>
+                          </Text>
                         </View>
-                    ))}
+                      ))}
                     </ScrollView>
-                    <TouchableOpacity 
-                        onPress={handleInfoClick}
-                        style={[styles.helpContainer, { flexDirection: 'row', alignItems: 'center' }]}
+                    <TouchableOpacity
+                      onPress={handleInfoClick}
+                      style={[styles.helpContainer, { flexDirection: 'row', alignItems: 'center' }]}
                     >
-                        <Image 
-                            source={require('../assets/images/info.png')}
-                            style={styles.infoIcon}
-                            resizeMode="contain"
-                        />
-                        <Text style={styles.modalTitle}> Generator info</Text>
+                      <Image
+                        source={require('../assets/images/info.png')}
+                        style={styles.infoIcon}
+                        resizeMode="contain"
+                      />
+                      <Text style={styles.modalTitle}> Generator info</Text>
                     </TouchableOpacity>
-                </View>
+                  </View>
                 </TouchableWithoutFeedback>
-            </View>
+              </View>
             </TouchableWithoutFeedback>
-        </Modal>
+          </Modal>
 
 
-        {/* Modal for entering the job key */}
-        <Modal
-          animationType="fade"
-          transparent={true}
-          visible={modalVisible}
-          onRequestClose={() => setModalVisible(false)}
-        >
-          <View style={styles.modalOverlay}>
-            <View style={styles.modalContainer}>
-              <Text style={styles.modalTitle}>Enter Installation Job Key</Text>
+          {/* Modal for entering the job key */}
+          {/* Modal for entering the job key */}
+          <Modal
+            animationType="fade"
+            transparent={true}
+            visible={modalVisible}
+            onRequestClose={() => setModalVisible(false)}
+          >
+            <View style={styles.modalOverlay}>
+              <View style={styles.modalContainer}>
+                <Text style={styles.modalTitle}>Enter Installation Job Key</Text>
 
-              <TextInput
-                style={styles.input}
-                placeholder="Generator key"
-                value={jobKey}
-                onChangeText={setJobKey}
-              />
+                <TextInput
+                  style={styles.input}
+                  placeholder="Generator key"
+                  placeholderTextColor="#FFFFFF"
+                  value={jobKey}
+                  onChangeText={setJobKey}
+                />
 
-              <View style={styles.modalButtons}>
-                <TouchableOpacity
-                  style={styles.modalButton}
-                  onPress={() => setModalVisible(false)}
-                >
-                  <Text style={styles.modalButtonText}>Cancel</Text>
-                </TouchableOpacity>
+                <View style={styles.modalButtons}>
+                  {/* Cancel Button */}
+                  <TouchableOpacity
+                    style={styles.modalButton}
+                    onPress={() => setModalVisible(false)}
+                  >
+                    <Text style={styles.modalButtonText}>Cancel</Text>
+                  </TouchableOpacity>
 
-                <TouchableOpacity
-                  style={styles.modalButton}
-                  onPress={addInstallationJob}
-                >
-                  <Text style={styles.modalButtonText}>OK</Text>
-                </TouchableOpacity>
+                  {/* OK Button */}
+                  <TouchableOpacity
+                    style={styles.modalButton}
+                    onPress={async () => {
+                      try {
+                        // Validation logic
+                        if (!jobKey.trim()) {
+                          Alert.alert('Error', 'Please enter a valid Generator key.');
+                          return;
+                        }
+
+                        // Retrieve token
+                        const token = await AsyncStorage.getItem('authToken');
+                        if (!token) {
+                          Alert.alert('Error', 'You are not logged in.');
+                          return;
+                        }
+
+                        // Fetch job data
+                        const apiUrl = `http://10.96.33.238:8080/api/v1/job/get-user-jobs?generatorId=${jobKey}`;
+                        const response = await fetch(apiUrl, {
+                          method: 'GET',
+                          headers: {
+                            Authorization: `Bearer ${token}`,
+                            'Content-Type': 'application/json',
+                          },
+                        });
+
+                        if (!response.ok) {
+                          throw new Error(`Failed to fetch installation jobs. Status: ${response.status}`);
+                        }
+
+                        const data = await response.json();
+                        // setGeneratorInfo(data);
+                        // setGeneratorData(data);
+                        // Match the job by generator ID
+                        const matchedJob = data.find(
+                          (jobObj) => jobObj.job.id.trim().toLowerCase() === jobKey.trim().toLowerCase()
+                        );
+
+                        if (!matchedJob) {
+                          Alert.alert('Error', 'No matching job found for the entered generator key.');
+                          return;
+                        }
+                        setJobData(data);
+                        console.log("hey you " + data.map((item) => item.job.gen_size_model))
+                        setSpecKey(data.map((item) => item.job.gen_size_model));
+
+                        // Update states for routing
+                        setInstallationJobs((prevJobs) => [...prevJobs, matchedJob.job]); // Add to the job list
+                        setModalVisible(false); // Close the modal
+                      } catch (error) {
+                        console.error('Error during job validation:', error);
+                        Alert.alert('Error', error.message);
+                      }
+                    }}
+                  >
+                    <Text style={styles.modalButtonText}>OK</Text>
+                  </TouchableOpacity>
+                </View>
               </View>
             </View>
-          </View>
-        </Modal>
+          </Modal>
 
-        {/* Animated Side Menu */}
-        <Animated.View style={[styles.menuContainer, { transform: [{ translateX: slideAnim }] }]}>
-          {/* Logo Icon */}
-          <View style={styles.logoContainer}>
-            <Image
-              source={require('../assets/images/Arrow_logo.png')}
-              style={styles.Menu_Logo}
-              resizeMode="contain"
+
+          {/* Animated Side Menu */}
+          <Animated.View style={[styles.menuContainer, { transform: [{ translateX: slideAnim }] }]}>
+            {/* Logo Icon */}
+            <View style={styles.logoContainer}>
+              <Image
+                source={require('../assets/images/Arrow_logo.png')}
+                style={styles.Menu_Logo}
+                resizeMode="contain"
               />
-          </View>
+            </View>
 
-          {/* Menu Items */}
-          <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('HomeScreen')}>
-            <Image
-            source={require('../assets/images/Home.png')}
-            style={styles.adLogo}
-            resizeMode="contain"
-            />
-            <Text style={styles.menuText}>Home</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Profile')}>
-            <Image
-              source={require('../assets/images/Profile.png')}
-              style={styles.adLogo}
-              resizeMode="contain"
+            {/* Menu Items */}
+            <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('HomeScreen')}>
+              <Image
+                source={require('../assets/images/Home.png')}
+                style={styles.adLogo}
+                resizeMode="contain"
               />
-            <Text style={styles.menuText}>Profile</Text>
-          </TouchableOpacity>
+              <Text style={styles.menuText}>Home</Text>
+            </TouchableOpacity>
 
-          <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Notifications')}>
-            <Image
-              source={require('../assets/images/Bell.png')}
-              style={styles.adLogo}
-              resizeMode="contain"
+            <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Profile')}>
+              <Image
+                source={require('../assets/images/Profile.png')}
+                style={styles.adLogo}
+                resizeMode="contain"
               />
-            <Text style={styles.menuText}>Notifications</Text>
-          </TouchableOpacity>
+              <Text style={styles.menuText}>Profile</Text>
+            </TouchableOpacity>
 
-          <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Service_Request')}>
-            <Image
-              source={require('../assets/images/Tool.png')}
-              style={styles.adLogo}
-              resizeMode="contain"
+            <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Notifications')}>
+              <Image
+                source={require('../assets/images/Bell.png')}
+                style={styles.adLogo}
+                resizeMode="contain"
               />
-            <Text style={styles.menuText}>Service Request</Text>
-          </TouchableOpacity>
+              <Text style={styles.menuText}>Notifications</Text>
+            </TouchableOpacity>
 
-          <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Faq')}>
-            <Image
-              source={require('../assets/images/FAQ.png')}
-              style={styles.adLogo}
-              resizeMode="contain"
+            <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Service_Request')}>
+              <Image
+                source={require('../assets/images/Tool.png')}
+                style={styles.adLogo}
+                resizeMode="contain"
               />
-            <Text style={styles.menuText}>FAQ</Text>
-          </TouchableOpacity>
+              <Text style={styles.menuText}>Service Request</Text>
+            </TouchableOpacity>
 
-          <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('About_Us')}>
-            <Image
-              source={require('../assets/images/About.png')}
-              style={styles.adLogo}
-              resizeMode="contain"
+            <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Faq')}>
+              <Image
+                source={require('../assets/images/FAQ.png')}
+                style={styles.adLogo}
+                resizeMode="contain"
               />
-            <Text style={styles.menuText}>About Us</Text>
-          </TouchableOpacity>
+              <Text style={styles.menuText}>FAQ</Text>
+            </TouchableOpacity>
 
-          <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Login')}>
-            <Image
-              source={require('../assets/images/Logout.png')}
-              style={styles.adLogo}
-              resizeMode="contain"
+            <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('About_Us')}>
+              <Image
+                source={require('../assets/images/About.png')}
+                style={styles.adLogo}
+                resizeMode="contain"
               />
-            <Text style={styles.menuText}>Logout</Text>
-          </TouchableOpacity>
-        </Animated.View>
+              <Text style={styles.menuText}>About Us</Text>
+            </TouchableOpacity>
 
-        {/* Show Generator Information Modal */}
-        <Modal
-              transparent={true}
-              visible={showInfo}
-              animationType="fade"
-              onRequestClose={handleCloseInfo} 
-            >
-                <View style={styles.modalBackground}>
-                  <View style={styles.infoContainer}>
-                    <TouchableOpacity style={styles.closeButton} onPress={handleCloseInfo}>
-                      <Text style={styles.closeButtonText}>X</Text>
-                    </TouchableOpacity>
-                    {generatorInfo && (
-                      <>
-                        <Text style={styles.infoTitle}>{generatorInfo.name}</Text>
-                        {generatorInfo.description && (
+            <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Login')}>
+              <Image
+                source={require('../assets/images/Logout.png')}
+                style={styles.adLogo}
+                resizeMode="contain"
+              />
+              <Text style={styles.menuText}>Logout</Text>
+            </TouchableOpacity>
+          </Animated.View>
+
+          {/* Show Generator Information Modal */}
+          {/* Show Generator Information Modal */}
+          <Modal
+            transparent={true}
+            visible={showInfo}
+            animationType="fade"
+            onRequestClose={handleCloseInfo}
+          >
+            <View style={styles.modalBackground}>
+              <View style={styles.infoContainer}>
+                <TouchableOpacity style={styles.closeButton} onPress={handleCloseInfo}>
+                  <Text style={styles.closeButtonText}>X</Text>
+                </TouchableOpacity>
+                {/* Wrap modal content in a ScrollView */}
+                <ScrollView
+                  contentContainerStyle={styles.scrollViewContent}
+                  nestedScrollEnabled={true}
+                >
+                  {generatorInfo && (
+                    <>
+                      <Text style={styles.infoTitle}>{generatorInfo.name}</Text>
+                      {generatorInfo.description && (
+                        <>
+                          <Text style={styles.infoDescription}>Description:</Text>
+                          <Text style={styles.specificationBullet}>{generatorInfo.description}</Text>
+                        </>
+                      )}
+                      <Text style={styles.infoSpecifications}>Specifications:</Text>
+                      {/* Specifications List */}
+                      <View style={styles.specificationsList}>
+                        {generatorInfo.specifications[0] && (
                           <>
-                            <Text style={styles.infoDescription}>Description:</Text>
-                            <Text style={styles.specificationBullet}>{generatorInfo.description}</Text>
+                            {generatorInfo.specifications[0].model && (
+                              <Text style={styles.specificationBullet}>
+                                • Model: {generatorInfo.specifications[0].model}
+                              </Text>
+                            )}
+                            {generatorInfo.specifications[0].series && (
+                              <Text style={styles.specificationBullet}>
+                                • Series: {generatorInfo.specifications[0].series}
+                              </Text>
+                            )}
+                            {generatorInfo.specifications[0].fuelType && (
+                              <Text style={styles.specificationBullet}>
+                                • Fuel Type: {generatorInfo.specifications[0].fuelType}
+                              </Text>
+                            )}
+                            {generatorInfo.specifications[0].AutomaticTSA_Rating && (
+                              <Text style={styles.specificationBullet}>
+                                • Automatic TSA Rating: {generatorInfo.specifications[0].AutomaticTSA_Rating}
+                              </Text>
+                            )}
+                            {/* Other specification fields */}
                           </>
                         )}
-                        <Text style={styles.infoSpecifications}>Specifications:</Text>
-                        {/* Wrap specifications in a ScrollView */}
-                        <ScrollView style={styles.specificationsList} nestedScrollEnabled={true}>
-                          {/* Conditional Rendering of Specifications */}
-                          {generatorInfo.specifications[0] && (
-                            <>
-                              {generatorInfo.specifications[0].model && (
-                                <Text style={styles.specificationBullet}>
-                                  • Model: {generatorInfo.specifications[0].model}
-                                </Text>
-                              )}
-                              {generatorInfo.specifications[0].series && (
-                                <Text style={styles.specificationBullet}>
-                                  • Series: {generatorInfo.specifications[0].series}
-                                </Text>
-                              )}
-                              {generatorInfo.specifications[0].fuelType && (
-                                <Text style={styles.specificationBullet}>
-                                  • Fuel Type: {generatorInfo.specifications[0].fuelType}
-                                </Text>
-                              )}
-                              {generatorInfo.specifications[0].AutomaticTSA_Rating && (
-                                <Text style={styles.specificationBullet}>
-                                  • Automatic TSA Rating: {generatorInfo.specifications[0].AutomaticTSA_Rating}
-                                </Text>
-                              )}
-                              {generatorInfo.specifications[0].Circuits && (
-                                <Text style={styles.specificationBullet}>
-                                  • Circuits: {generatorInfo.specifications[0].Circuits}
-                                </Text>
-                              )}
-                              {generatorInfo.specifications[0].engine_size && (
-                                <Text style={styles.specificationBullet}>
-                                  • Engine Size: {generatorInfo.specifications[0].engine_size}
-                                </Text>
-                              )}
-                              {generatorInfo.specifications[0].minAmps_240V && (
-                                <Text style={styles.specificationBullet}>
-                                  • Min Amps 240V: {generatorInfo.specifications[0].minAmps_240V}
-                                </Text>
-                              )}
-                              {generatorInfo.specifications[0].minPowerRating && (
-                                <Text style={styles.specificationBullet}>
-                                  • Min Power Rating: {generatorInfo.specifications[0].minPowerRating}
-                                </Text>
-                              )}
-                              {generatorInfo.specifications[0].warrantyLength && (
-                                <Text style={styles.specificationBullet}>
-                                  • Warranty Length: {generatorInfo.specifications[0].warrantyLength}
-                                </Text>
-                              )}
-                              {generatorInfo.specifications[0].NG_BTUS && (
-                                <Text style={styles.specificationBullet}>
-                                  • NG BTUs: {generatorInfo.specifications[0].NG_BTUS}
-                                </Text>
-                              )}
-                              {generatorInfo.specifications[0].LP_BTUS && (
-                                <Text style={styles.specificationBullet}>
-                                  • LP BTUs: {generatorInfo.specifications[0].LP_BTUS}
-                                </Text>
-                              )}
-                              {generatorInfo.specifications[0].sku && (
-                                <Text style={styles.specificationBullet}>
-                                  • SKU: {generatorInfo.specifications[0].sku}
-                                </Text>
-                              )}
-                              {generatorInfo.specifications[0].weight && (
-                                <Text style={styles.specificationBullet}>
-                                  • Weight: {generatorInfo.specifications[0].weight}
-                                </Text>
-                              )}
-                            </>
-                          )}
-                        
-                        <View style={styles.representativeContainer}>
-                          <Text style={styles.representativeTitle}>Representatives:</Text>
-                          <Text style={styles.representativeText}>Sales: {salesRepresentative}</Text>
-                          <Text style={styles.representativeText}>Installation: {installationRepresentative}</Text>
-                        </View>
-                        </ScrollView>
-                      </>
-                    )}
-                  </View>
-                </View>
-            </Modal>
+                      </View>
+                      {/* Representatives Section */}
+                      {/* <View style={styles.representativeContainer}>
+                        <Text style={styles.representativeTitle}>Representatives:</Text>
+                        <Text style={styles.representativeText}>Sales: {salesRepresentative}</Text>
+                        <Text style={styles.representativeText}>Installation: {installationRepresentative}</Text>
+                      </View> */}
+                    </>
+                  )}
+                </ScrollView>
+              </View>
+            </View>
+          </Modal>
 
-        {/* Ad Section with scrolling text */}
-        <View style={styles.adContainer}>
-          <Animated.View style={[animatedStyle, styles.scrollingTextContainer]}>
-            <MarqueeText text="This is a scrolling marquee text in React Native!" />
-          </Animated.View>
-        </View>
-      </ScrollView>
-    </ImageBackground>
+          {/* Ad Section with scrolling text */}
+          <View style={styles.adContainer}>
+            <Animated.View style={[animatedStyle, styles.scrollingTextContainer]}>
+              <MarqueeText text="This is a scrolling marquee text in React Native!" />
+            </Animated.View>
+          </View>
+        </ScrollView>
+      </ImageBackground >
     )
   );
 };
@@ -1020,7 +1114,7 @@ const lightStyles = StyleSheet.create({
     overflow: 'hidden',
     textOverflow: 'ellipsis',
     textAlign: 'center',
-},
+  },
 
   jobGeneratorInfo: {
     fontSize: 20,

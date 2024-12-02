@@ -199,9 +199,9 @@ export const ResidentialGeneratorData: ResidentialGenerator[] = [
     },
     {
         id: 'A7',
-        name: 'Generac 30kW Home Backup Generator with Wi-Fi',
+        name: 'Generac 40kW Home Backup Generator with Wi-Fi',
         description: `
-            The Generac 30kW Home Backup Generator is the ultimate solution for comprehensive home backup power. Featuring Wi-Fi capability, you can monitor your generator's status from anywhere. Designed to run on natural gas or liquid propane, this generator offers robust power delivery for your entire home.
+            The Generac 40kW Home Backup Generator is the ultimate solution for comprehensive home backup power. Featuring Wi-Fi capability, you can monitor your generator's status from anywhere. Designed to run on natural gas or liquid propane, this generator offers robust power delivery for your entire home.
             
             With Generac's G-Force Engine, it’s engineered for longevity and reliability. Automatic transfer switch ensures seamless transition of power during outages. Built with quiet operation in mind, this generator provides peace of mind without the noise.
             

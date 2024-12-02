@@ -27,70 +27,69 @@ import CheckBox from '@react-native-community/checkbox';
 import { useDarkMode } from '../components/DarkModeContext.tsx';
 
 
-const {width} = Dimensions.get('screen');
+const { width } = Dimensions.get('screen');
 
 const ProfileScreen = () => {
-    const [pushNotifications, setPushNotifications] = useState(false);
-    const [textNotifications, setTextNotifications] = useState(false);
-    const [emailNotifications, setEmailNotifications] = useState(false);
-    const [pauseNotifications, setPauseNotifications] = useState(false);
-    const navigation = useNavigation();
-    const [modalVisible, setModalVisible] = useState(false);
-    const [jobKey, setJobKey] = useState('');
-    const [installationJobs, setInstallationJobs] = useState([]);
-    const { isDarkMode, toggleDarkMode } = useDarkMode();
-    const styles = isDarkMode ? darkStyles : lightStyles;
+  const [pushNotifications, setPushNotifications] = useState(false);
+  const [textNotifications, setTextNotifications] = useState(false);
+  const [emailNotifications, setEmailNotifications] = useState(false);
+  const [pauseNotifications, setPauseNotifications] = useState(false);
+  const navigation = useNavigation();
+  const [modalVisible, setModalVisible] = useState(false);
+  const [jobKey, setJobKey] = useState('');
+  const [installationJobs, setInstallationJobs] = useState([]);
+  const { isDarkMode, toggleDarkMode } = useDarkMode();
+  const styles = isDarkMode ? darkStyles : lightStyles;
 
-    const [showInfo, setShowInfo] = useState(false);
-    const [showInstallation, setShowInstallation] = useState(false);
-    const [generatorInfo, setGeneratorInfo] = useState<ResidentialGenerator | null>(null);
-    const generatorId = 'A1';
-    const [menuVisible, setMenuVisible] = useState(false);
-    const slideAnim = useRef(new Animated.Value(-250)).current;
-    const [apsDefaultMode, setApsDefaultMode] = useState(true);
-    const [mapChecked, setMapChecked] = useState(true);
-    const [darkMode, setDarkMode] = useState(false);
-    const [lightMode, setLightMode] = useState(false);
-    const [showPassword, setShowPassword] = useState(false);
-    const [firstName, setFirstName] = useState('');
-    const [lastName, setLastName] = useState('');
-    const [email, setEmail] = useState('');
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
+  const [showInfo, setShowInfo] = useState(false);
+  const [showInstallation, setShowInstallation] = useState(false);
+  const [generatorInfo, setGeneratorInfo] = useState<ResidentialGenerator | null>(null);
+  const generatorId = 'A1';
+  const [menuVisible, setMenuVisible] = useState(false);
+  const slideAnim = useRef(new Animated.Value(-250)).current;
+  const [apsDefaultMode, setApsDefaultMode] = useState(true);
+  const [mapChecked, setMapChecked] = useState(true);
+  const [darkMode, setDarkMode] = useState(false);
+  const [lightMode, setLightMode] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
 
 
-    useEffect(() => {
-      // Fetch user data from the database when the component mounts
-      const fetchUserData = async () => {
-        try {
-          // Uncomment the following lines when you are able to use the actual API
-          // const response = await fetch('YOUR_API_ENDPOINT'); // Replace with actual API endpoint
-          // const userData = await response.json();
-    
-          // sample data
-          const sampleData = {
-            firstName: 'Emily',
-            lastName: 'Harrison',
-            email: 'Emily.harrison@example.com',
-            username: 'emily_h23',
-            password: 'Testing_password',
-          };
-    
-          // Set the sample data as the initial values
-          setFirstName(sampleData.firstName);
-          setLastName(sampleData.lastName);
-          setEmail(sampleData.email);
-          setUsername(sampleData.username);
-          setPassword(sampleData.password);
-          setConfirmPassword(sampleData.password);
-        } catch (error) {
-          console.error("Error fetching user data:", error);
-        }
-      };
-    
-      fetchUserData();
-    }, []);
+  useEffect(() => {
+    // Fetch user data from the database when the component mounts
+    const fetchUserData = async () => {
+      try {
+        // Uncomment the following lines when you are able to use the actual API
+        // const response = await fetch('YOUR_API_ENDPOINT'); // Replace with actual API endpoint
+        // const userData = await response.json();
+
+        // sample data
+        const sampleData = {
+          firstName: 'Ezra',
+          lastName: 'Boerman',
+          email: 'ezra@ezra.com',
+          password: 'ezra',
+        };
+
+        // Set the sample data as the initial values
+        setFirstName(sampleData.firstName);
+        setLastName(sampleData.lastName);
+        setEmail(sampleData.email);
+        setUsername(sampleData.username);
+        setPassword(sampleData.password);
+        setConfirmPassword(sampleData.password);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+
+    fetchUserData();
+  }, []);
 
   const toggleMenu = () => {
     if (menuVisible) {
@@ -118,7 +117,7 @@ const ProfileScreen = () => {
     'Scheduled/In-Progress',
     'Installation Completed',
   ];
-  
+
   // Add animated value for the scrolling text
   const scrollAnim = useRef(new Animated.Value(0)).current;
 
@@ -153,7 +152,7 @@ const ProfileScreen = () => {
       <View style={[styles.background, { backgroundColor: '#202020' }]}>
         <View style={styles.logoContainer}>
           <TouchableOpacity onPress={toggleMenu} style={styles.menuIcon}>
-            <Image 
+            <Image
               source={require('../assets/images/Menu_DM.png')}
               style={styles.menuIcon}
               resizeMode="contain"
@@ -207,88 +206,88 @@ const ProfileScreen = () => {
             </View>
           </ScrollView>
 
-    {/* Animated Side Menu */}
-    <Animated.View style={[styles.menuContainer, { transform: [{ translateX: slideAnim }] }]}>
-          {/* Logo Icon */}
-          <View style={styles.logoContainer}>
-            <Image
-              source={require('../assets/images/Arrow_logo.png')}
-              style={styles.Menu_Logo}
-              resizeMode="contain"
+          {/* Animated Side Menu */}
+          <Animated.View style={[styles.menuContainer, { transform: [{ translateX: slideAnim }] }]}>
+            {/* Logo Icon */}
+            <View style={styles.logoContainer}>
+              <Image
+                source={require('../assets/images/Arrow_logo.png')}
+                style={styles.Menu_Logo}
+                resizeMode="contain"
               />
-          </View>
+            </View>
 
-          {/* Menu Items */}
-          <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('HomeScreen')}>
-            <Image
-            source={require('../assets/images/Home_DM.png')}
-            style={styles.adLogo}
-            resizeMode="contain"
-            />
-            <Text style={styles.menuText}>Home</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Profile')}>
-            <Image
-              source={require('../assets/images/Profile_DM.png')}
-              style={styles.adLogo}
-              resizeMode="contain"
+            {/* Menu Items */}
+            <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('HomeScreen')}>
+              <Image
+                source={require('../assets/images/Home_DM.png')}
+                style={styles.adLogo}
+                resizeMode="contain"
               />
-            <Text style={styles.menuText}>Profile</Text>
-          </TouchableOpacity>
+              <Text style={styles.menuText}>Home</Text>
+            </TouchableOpacity>
 
-          <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Notifications')}>
-            <Image
-              source={require('../assets/images/Bell_DM.png')}
-              style={styles.adLogo}
-              resizeMode="contain"
+            <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Profile')}>
+              <Image
+                source={require('../assets/images/Profile_DM.png')}
+                style={styles.adLogo}
+                resizeMode="contain"
               />
-            <Text style={styles.menuText}>Notifications</Text>
-          </TouchableOpacity>
+              <Text style={styles.menuText}>Profile</Text>
+            </TouchableOpacity>
 
-          <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Service_Request')}>
-            <Image
-              source={require('../assets/images/Tool_DM.png')}
-              style={styles.adLogo}
-              resizeMode="contain"
+            <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Notifications')}>
+              <Image
+                source={require('../assets/images/Bell_DM.png')}
+                style={styles.adLogo}
+                resizeMode="contain"
               />
-            <Text style={styles.menuText}>Service Request</Text>
-          </TouchableOpacity>
+              <Text style={styles.menuText}>Notifications</Text>
+            </TouchableOpacity>
 
-          <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Faq')}>
-            <Image
-              source={require('../assets/images/FAQ_DM.png')}
-              style={styles.adLogo}
-              resizeMode="contain"
+            <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Service_Request')}>
+              <Image
+                source={require('../assets/images/Tool_DM.png')}
+                style={styles.adLogo}
+                resizeMode="contain"
               />
-            <Text style={styles.menuText}>FAQ</Text>
-          </TouchableOpacity>
+              <Text style={styles.menuText}>Service Request</Text>
+            </TouchableOpacity>
 
-          <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('About_Us')}>
-            <Image
-              source={require('../assets/images/About_DM.png')}
-              style={styles.adLogo}
-              resizeMode="contain"
+            <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Faq')}>
+              <Image
+                source={require('../assets/images/FAQ_DM.png')}
+                style={styles.adLogo}
+                resizeMode="contain"
               />
-            <Text style={styles.menuText}>About Us</Text>
-          </TouchableOpacity>
+              <Text style={styles.menuText}>FAQ</Text>
+            </TouchableOpacity>
 
-          <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Login')}>
-            <Image
-              source={require('../assets/images/Logout_DM.png')}
-              style={styles.adLogo}
-              resizeMode="contain"
+            <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('About_Us')}>
+              <Image
+                source={require('../assets/images/About_DM.png')}
+                style={styles.adLogo}
+                resizeMode="contain"
               />
-            <Text style={styles.menuText}>Logout</Text>
-          </TouchableOpacity>
-        </Animated.View>
-        {/* Ad Section with scrolling text */}
-        <View style={styles.adContainer}>
-          <Animated.View style={[animatedStyle, styles.scrollingText]}>
-            <MarqueeText text="This is a scrolling marquee text in React Native!" />
+              <Text style={styles.menuText}>About Us</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Login')}>
+              <Image
+                source={require('../assets/images/Logout_DM.png')}
+                style={styles.adLogo}
+                resizeMode="contain"
+              />
+              <Text style={styles.menuText}>Logout</Text>
+            </TouchableOpacity>
           </Animated.View>
-        </View>
-      </ScrollView>
+          {/* Ad Section with scrolling text */}
+          <View style={styles.adContainer}>
+            <Animated.View style={[animatedStyle, styles.scrollingText]}>
+              <MarqueeText text="This is a scrolling marquee text in React Native!" />
+            </Animated.View>
+          </View>
+        </ScrollView>
       </View>
     ) : (
       <ImageBackground
@@ -297,23 +296,23 @@ const ProfileScreen = () => {
         blurRadius={5}
         style={styles.background}
       >
-      <View style={styles.logoContainer}>
-      <TouchableOpacity onPress={toggleMenu} style={styles.menuIcon}>
-        <Image 
-          source={require('../assets/images/Menu.png')}
-          style={styles.menuIcon}
-          resizeMode="contain"
-        />
-      </TouchableOpacity>
+        <View style={styles.logoContainer}>
+          <TouchableOpacity onPress={toggleMenu} style={styles.menuIcon}>
+            <Image
+              source={require('../assets/images/Menu.png')}
+              style={styles.menuIcon}
+              resizeMode="contain"
+            />
+          </TouchableOpacity>
 
-        <Image
-          source={require('../assets/images/anderson-power-logo.png')}
-          style={styles.logo}
-          resizeMode="contain"
-        />
-      </View>
+          <Image
+            source={require('../assets/images/anderson-power-logo.png')}
+            style={styles.logo}
+            resizeMode="contain"
+          />
+        </View>
 
-      <ScrollView contentContainerStyle={styles.contentContainer}>
+        <ScrollView contentContainerStyle={styles.contentContainer}>
           <Text style={styles.title}>Profile</Text>
           <View style={styles.line} />
           <ScrollView contentContainerStyle={styles.contentContainer}>
@@ -353,90 +352,90 @@ const ProfileScreen = () => {
               </TouchableOpacity>
             </View>
           </ScrollView>
-    
-    {/* Animated Side Menu */}
-    <Animated.View style={[styles.menuContainer, { transform: [{ translateX: slideAnim }] }]}>
-          {/* Logo Icon */}
-          <View style={styles.logoContainer}>
-            <Image
-              source={require('../assets/images/Arrow_logo.png')}
-              style={styles.Menu_Logo}
-              resizeMode="contain"
-              />
-          </View>
 
-          {/* Menu Items */}
-          <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('HomeScreen')}>
-            <Image
-            source={require('../assets/images/Home.png')}
-            style={styles.adLogo}
-            resizeMode="contain"
-            />
-            <Text style={styles.menuText}>Home</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Profile')}>
-            <Image
-              source={require('../assets/images/Profile.png')}
-              style={styles.adLogo}
-              resizeMode="contain"
+          {/* Animated Side Menu */}
+          <Animated.View style={[styles.menuContainer, { transform: [{ translateX: slideAnim }] }]}>
+            {/* Logo Icon */}
+            <View style={styles.logoContainer}>
+              <Image
+                source={require('../assets/images/Arrow_logo.png')}
+                style={styles.Menu_Logo}
+                resizeMode="contain"
               />
-            <Text style={styles.menuText}>Profile</Text>
-          </TouchableOpacity>
+            </View>
 
-          <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Notifications')}>
-            <Image
-              source={require('../assets/images/Bell.png')}
-              style={styles.adLogo}
-              resizeMode="contain"
+            {/* Menu Items */}
+            <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('HomeScreen')}>
+              <Image
+                source={require('../assets/images/Home.png')}
+                style={styles.adLogo}
+                resizeMode="contain"
               />
-            <Text style={styles.menuText}>Notifications</Text>
-          </TouchableOpacity>
+              <Text style={styles.menuText}>Home</Text>
+            </TouchableOpacity>
 
-          <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Service_Request')}>
-            <Image
-              source={require('../assets/images/Tool.png')}
-              style={styles.adLogo}
-              resizeMode="contain"
+            <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Profile')}>
+              <Image
+                source={require('../assets/images/Profile.png')}
+                style={styles.adLogo}
+                resizeMode="contain"
               />
-            <Text style={styles.menuText}>Service Request</Text>
-          </TouchableOpacity>
+              <Text style={styles.menuText}>Profile</Text>
+            </TouchableOpacity>
 
-          <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Faq')}>
-            <Image
-              source={require('../assets/images/FAQ.png')}
-              style={styles.adLogo}
-              resizeMode="contain"
+            <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Notifications')}>
+              <Image
+                source={require('../assets/images/Bell.png')}
+                style={styles.adLogo}
+                resizeMode="contain"
               />
-            <Text style={styles.menuText}>FAQ</Text>
-          </TouchableOpacity>
+              <Text style={styles.menuText}>Notifications</Text>
+            </TouchableOpacity>
 
-          <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('About_Us')}>
-            <Image
-              source={require('../assets/images/About.png')}
-              style={styles.adLogo}
-              resizeMode="contain"
+            <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Service_Request')}>
+              <Image
+                source={require('../assets/images/Tool.png')}
+                style={styles.adLogo}
+                resizeMode="contain"
               />
-            <Text style={styles.menuText}>About Us</Text>
-          </TouchableOpacity>
+              <Text style={styles.menuText}>Service Request</Text>
+            </TouchableOpacity>
 
-          <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Login')}>
-            <Image
-              source={require('../assets/images/Logout.png')}
-              style={styles.adLogo}
-              resizeMode="contain"
+            <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Faq')}>
+              <Image
+                source={require('../assets/images/FAQ.png')}
+                style={styles.adLogo}
+                resizeMode="contain"
               />
-            <Text style={styles.menuText}>Logout</Text>
-          </TouchableOpacity>
-        </Animated.View>
-        {/* Ad Section with scrolling text */}
-        <View style={styles.adContainer}>
-          <Animated.View style={[animatedStyle, styles.scrollingText]}>
-            <MarqueeText text="This is a scrolling marquee text in React Native!" />
+              <Text style={styles.menuText}>FAQ</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('About_Us')}>
+              <Image
+                source={require('../assets/images/About.png')}
+                style={styles.adLogo}
+                resizeMode="contain"
+              />
+              <Text style={styles.menuText}>About Us</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Login')}>
+              <Image
+                source={require('../assets/images/Logout.png')}
+                style={styles.adLogo}
+                resizeMode="contain"
+              />
+              <Text style={styles.menuText}>Logout</Text>
+            </TouchableOpacity>
           </Animated.View>
-        </View>
-      </ScrollView>
-    </ImageBackground>
+          {/* Ad Section with scrolling text */}
+          <View style={styles.adContainer}>
+            <Animated.View style={[animatedStyle, styles.scrollingText]}>
+              <MarqueeText text="This is a scrolling marquee text in React Native!" />
+            </Animated.View>
+          </View>
+        </ScrollView>
+      </ImageBackground>
     )
   );
 };

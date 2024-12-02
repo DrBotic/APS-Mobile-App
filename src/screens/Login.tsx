@@ -9,8 +9,11 @@ import {
   Image,
   SafeAreaView,
   ScrollView,
+  Alert,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Platform } from 'react-native';
 import { Spacing, Color, FontFamily, FontSize, BorderRadius } from '../theme/themes.ts';
 import { useDarkMode } from '../components/DarkModeContext.tsx';
 
@@ -19,8 +22,46 @@ const Login = () => {
   const navigation = useNavigation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const { isDarkMode, toggleDarkMode } = useDarkMode();
   const styles = isDarkMode ? darkStyles : lightStyles;
+
+  const handleLogin = async () => {
+    const login_API_URL =
+      Platform.OS === "android"
+        ? "http://10.96.33.238:8080/api/v1/auth/login" // Correct endpoint
+        : "http://10.96.33.238:8080/api/v1/auth/login"; // For iOS or local development
+
+    setIsLoading(true);
+
+    try {
+      const response = await fetch(login_API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email, password }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Invalid credentials');
+      }
+
+      const data = await response.json();
+
+      // Check if token exists in response
+      if (data.token) {
+        await AsyncStorage.setItem('authToken', data.token);
+        // Navigate to the next page and pass user data if needed
+        navigation.navigate('HomeScreen', { user: data });
+      } else {
+        throw new Error('User verification failed');
+      }
+    } catch (error) {
+      Alert.alert('Error', error.message || 'Something went wrong.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
 
   return (
     <ImageBackground
@@ -60,10 +101,16 @@ const Login = () => {
             />
 
             <TouchableOpacity
-              style={styles.button}
-              onPress={() => navigation.navigate('HomeScreen')}
+              style={[
+                styles.button,
+                (!email || !password || isLoading) && styles.disabledButton,
+              ]}
+              onPress={handleLogin}
+              disabled={!email || !password || isLoading}
             >
-              <Text style={styles.buttonText}>Sign In</Text>
+              <Text style={styles.buttonText}>
+                {isLoading ? 'Signing In...' : 'Sign In'}
+              </Text>
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -134,6 +181,7 @@ const lightStyles = StyleSheet.create({
     paddingHorizontal: Spacing.space_20,
     marginBottom: Spacing.space_30,
     fontFamily: FontFamily.sansSerif_regular,
+    color: '#111111',
   },
   button: {
     backgroundColor: Color.red,
@@ -186,7 +234,7 @@ const darkStyles = StyleSheet.create({
     borderRadius: BorderRadius.radius_20,
     width: '80%',
     alignItems: 'center',
-    shadowColor: '#000', 
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 4,
@@ -215,6 +263,9 @@ const darkStyles = StyleSheet.create({
     borderRadius: BorderRadius.radius_30,
     alignItems: 'center',
     marginVertical: Spacing.space_20,
+  },
+  disabledButton: {
+    backgroundColor: Color.gray, // Adjust this color as needed
   },
   buttonText: {
     color: '#FFFFFF',  // White text for button
